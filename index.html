@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light" style="color-scheme: light;"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>盲盒信箱</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-base: #06070C;
+    --glass: rgba(255,255,255,.09);
+    --glass-strong: rgba(255,255,255,.16);
+    --glass-border: rgba(255,255,255,.28);
+    --glass-shadow: 0 8px 32px rgba(0,0,0,.45);
+    --tint-work: #F2C572;
+    --tint-life: #B9AEF0;
+    --tint-values: #7FE0CF;
+    --tint-random: #F0A6C0;
+    --tint-share: #4CE0FF;
+    --accent-cyan: #4CE0FF;
+    --accent-cyan-dim: rgba(76,224,255,.4);
+    --text-hi: #F7F7FB;
+    --text-lo: rgba(247,247,251,.62);
+    --danger: #FF8A8A;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: var(--bg-base);
+    color: var(--text-hi);
+    font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC', sans-serif;
+    overflow-x: hidden;
+  }
+  body {
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .mesh {
+    position: fixed;
+    inset: -10%;
+    z-index: 0;
+    filter: blur(70px);
+    background:
+      radial-gradient(38% 32% at 18% 22%, rgba(99,102,241,.55), transparent 70%),
+      radial-gradient(34% 30% at 82% 18%, rgba(236,72,153,.42), transparent 70%),
+      radial-gradient(40% 36% at 70% 78%, rgba(45,212,191,.38), transparent 70%),
+      radial-gradient(30% 28% at 20% 82%, rgba(234,179,8,.28), transparent 70%);
+    animation: drift 26s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    0%   { transform: translate3d(0,0,0) scale(1); }
+    100% { transform: translate3d(2%,-3%,0) scale(1.06); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .mesh { animation: none; }
+  }
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 44px 20px 40px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .statusLine {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+    font-size: 11.5px;
+    letter-spacing: .02em;
+    color: var(--accent-cyan);
+    margin-bottom: 14px;
+  }
+  .statusLine .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent-cyan);
+    box-shadow: 0 0 8px 2px var(--accent-cyan-dim);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: .5; transform: scale(.85); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .statusLine .dot { animation: none; }
+  }
+  h1 {
+    font-weight: 800;
+    font-size: clamp(26px, 6vw, 32px);
+    margin: 0 0 10px;
+    letter-spacing: -.01em;
+  }
+  header p {
+    color: var(--text-lo);
+    font-size: 14.5px;
+    line-height: 1.7;
+    max-width: 32em;
+    margin: 0 auto;
+  }
+  .lastOpened {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--text-hi);
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+  }
+  .pingRow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .pingBtn {
+    appearance: none;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: var(--text-hi);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: var(--glass-shadow);
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 13.5px;
+    padding: 9px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease;
+  }
+  .pingBtn:hover { transform: translateY(-1px); background: var(--glass-strong); }
+  .pingBtn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .pingBtn.sent { opacity: .7; }
+  .pingStatus {
+    font-size: 12px;
+    color: var(--text-lo);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+  .emptyHint {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-lo);
+    font-size: 14px;
+    padding: 24px 0;
+  }
+  .box {
+    appearance: none;
+    border: 1px solid var(--glass-border);
+    aspect-ratio: 1;
+    border-radius: 22px;
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(160%);
+    backdrop-filter: blur(18px) saturate(160%);
+    box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.25);
+    position: relative;
+    cursor: pointer;
+    padding: 0;
+    transition: transform .18s ease, background .18s ease;
+    overflow: hidden;
+  }
+  .box::before {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    background: radial-gradient(circle at 50% 30%, var(--tint), transparent 65%);
+    opacity: .5;
+  }
+  .box:hover { transform: translateY(-2px); background: var(--glass-strong); box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.25), 0 0 0 1px var(--accent-cyan-dim), 0 0 18px var(--accent-cyan-dim); }
+  .box:focus-visible { outline: 2px solid var(--accent-cyan); outline-offset: 3px; }
+  .box .badge {
+    position: absolute;
+    top: 6px; right: 6px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: rgba(0,0,0,.35);
+    border: 1px solid var(--glass-border);
+    font-size: 10.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  .box .peek {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 1;
+  }
+  .box.opened { opacity: .85; }
+  .box.bounce { animation: bounce .38s ease; }
+  @keyframes bounce {
+    0% { transform: scale(1); }
+    35% { transform: scale(.92) rotate(-2deg); }
+    65% { transform: scale(1.06) rotate(2deg); }
+    100% { transform: scale(1); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .box.bounce { animation: none; }
+    .box, .overlay, .note { transition: none !important; }
+  }
+  form {
+    position: relative;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    backdrop-filter: blur(22px) saturate(160%);
+    box-shadow: var(--glass-shadow);
+    border-radius: 26px;
+    padding: 20px;
+    isolation: isolate;
+  }
+  form::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle, 0deg), var(--accent-cyan-dim), transparent 30%, transparent 70%, var(--accent-cyan-dim));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    animation: rotateAngle 6s linear infinite;
+  }
+  @property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  @keyframes rotateAngle {
+    to { --angle: 360deg; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    form::before { animation: none; }
+  }
+  .moods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .moods label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,.04);
+    font-size: 13px;
+    color: var(--text-lo);
+    cursor: pointer;
+    transition: border-color .15s, color .15s, background .15s;
+  }
+  .moods input { position: absolute; opacity: 0; pointer-events: none; }
+  .moods label:has(input:checked) { border-color: #fff; color: var(--text-hi); background: rgba(255,255,255,.14); }
+  textarea, .replyInput {
+    width: 100%;
+    background: rgba(0,0,0,.22);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    color: var(--text-hi);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 14px;
+    line-height: 1.6;
+  }
+  textarea { min-height: 84px; resize: vertical; }
+  textarea:focus-visible, .replyInput:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  textarea::placeholder, .replyInput::placeholder { color: rgba(247,247,251,.4); }
+  .formFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+  }
+  button.submit, button.sendReply {
+    appearance: none;
+    border: none;
+    background: rgba(255,255,255,.92);
+    color: #10121A;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 11px 20px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: transform .15s ease, opacity .15s ease;
+  }
+  button.submit:hover, button.sendReply:hover { transform: translateY(-1px); }
+  button.submit:focus-visible, button.sendReply:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  #status { font-size: 12.5px; color: var(--text-lo); }
+  #status.error { color: var(--danger); }
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    background: rgba(4,4,8,.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity .18s ease;
+  }
+  .overlay.hidden { opacity: 0; pointer-events: none; }
+  .note {
+    position: relative;
+    isolation: isolate;
+    max-width: 440px;
+    width: 100%;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    background: rgba(24,22,36,.55);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
+    border-radius: 28px;
+    padding: 22px 20px 18px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.15);
+    transform: scale(1);
+    transition: transform .18s ease;
+  }
+  .note::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: conic-gradient(from var(--angle, 0deg), var(--accent-cyan-dim), transparent 30%, transparent 70%, var(--accent-cyan-dim));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    animation: rotateAngle 6s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .note::before { animation: none; }
+  }
+  .overlay.hidden .note { transform: scale(.94); }
+  .noteTop {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  #noteMeta { font-size: 12.5px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; color: var(--accent-cyan); margin: 0; flex: 1; }
+  .iconBtn {
+    appearance: none;
+    border: 1px solid var(--glass-border);
+    background: rgba(255,255,255,.06);
+    color: var(--text-hi);
+    width: 30px; height: 30px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .iconBtn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+  .iconBtn.danger { color: var(--danger); border-color: rgba(255,138,138,.4); }
+  .iconBtn.danger.confirming { background: rgba(255,138,138,.18); }
+  #noteText {
+    font-size: 16.5px;
+    line-height: 1.85;
+    white-space: pre-wrap;
+    margin: 0 0 16px;
+  }
+  .replies {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-right: 2px;
+  }
+  .reply {
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 14px;
+    padding: 9px 12px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .replyRow {
+    display: flex;
+    gap: 8px;
+  }
+  button.sendReply { padding: 0 18px; flex: none; }
+</style>
+</head>
+<body>
+<div class="mesh"></div>
+<main>
+  <header>
+    <div class="statusLine"><span class="dot"></span>私人頻道 · 連線中</div>
+    <h1>盲盒信箱</h1>
+    <p>想到什麼就先包起來,不用配合我的時間表——但每個盒子,我都會看。</p>
+    <span id="lastOpened" class="lastOpened" style="display:none;"></span>
+    <div class="pingRow">
+      <button id="pingBtn" type="button" class="pingBtn">💬 我在線上,聊聊?</button>
+      <span id="pingStatus" class="pingStatus" style="display:none;"></span>
+    </div>
+  </header>
+
+  <section id="boxGrid" class="grid"></section>
+
+  <form id="addForm">
+    <div class="moods">
+      <label><input type="radio" name="mood" value="work"><span>😤 工作吐槽</span></label>
+      <label><input type="radio" name="mood" value="life" checked=""><span>🌙 生活瑣事</span></label>
+      <label><input type="radio" name="mood" value="values"><span>🌱 人生觀</span></label>
+      <label><input type="radio" name="mood" value="share"><span>🌤️ 開心分享</span></label>
+      <label><input type="radio" name="mood" value="random"><span>🎲 隨便說說</span></label>
+    </div>
+    <textarea id="boxText" placeholder="寫下你想說的話,或問問她今天有什麼開心事、想不想傳張照片……" required=""></textarea>
+    <div class="formFooter">
+      <span id="status"></span>
+      <button type="submit" class="submit">包起來,放進去 🎁</button>
+    </div>
+  </form>
+</main>
+
+<div id="noteOverlay" class="overlay hidden">
+  <div class="note">
+    <div class="noteTop">
+      <p id="noteMeta"></p>
+      <button id="deleteBox" class="iconBtn danger" aria-label="刪除這個盒子" title="刪除">🗑</button>
+      <button id="closeNote" class="iconBtn" aria-label="關閉">✕</button>
+    </div>
+    <p id="noteText"></p>
+    <div id="repliesList" class="replies"></div>
+    <div class="replyRow">
+      <input id="replyInput" class="replyInput" type="text" placeholder="回這句話……" maxlength="300">
+      <button id="sendReply" class="sendReply" type="button">回覆</button>
+    </div>
+  </div>
+</div>
+
+<script id="app-state" type="application/json">{"boxes":[],"lastOpenedAt":null,"readBy":{},"onlinePingAt":null}</script>
+<script>
+(function(){
+  'use strict';
+
+  var API = 'https://yun-online-notice.frank8771919.workers.dev';
+  var MAX_BOXES = 5;
+  var POLL_MS = 8000;
+  var accessCode = sessionStorage.getItem('blindbox_access_code') || '';
+  var userId = '';
+  var state = { boxes: [], lastOpenedAt: null, readBy: {}, onlinePingAt: null };
+  var openBoxId = null;
+  var pendingDelete = false;
+  var saveQueue = Promise.resolve();
+  var dirty = false;
+  var lastLocalMutation = 0;
+
+  var MOODS = {
+    work:   { label: '工作吐槽', emoji: '😤', tint: 'var(--tint-work)' },
+    life:   { label: '生活瑣事', emoji: '🌙', tint: 'var(--tint-life)' },
+    values: { label: '人生觀', emoji: '🌱', tint: 'var(--tint-values)' },
+    random: { label: '隨便說說', emoji: '🎲', tint: 'var(--tint-random)' },
+    share:  { label: '開心分享', emoji: '🌤️', tint: 'var(--tint-share)' }
+  };
+
+  var grid = document.getElementById('boxGrid');
+  var form = document.getElementById('addForm');
+  var textInput = document.getElementById('boxText');
+  var overlay = document.getElementById('noteOverlay');
+  var noteMeta = document.getElementById('noteMeta');
+  var noteText = document.getElementById('noteText');
+  var repliesList = document.getElementById('repliesList');
+  var replyInput = document.getElementById('replyInput');
+  var sendReplyBtn = document.getElementById('sendReply');
+  var closeNoteBtn = document.getElementById('closeNote');
+  var deleteBtn = document.getElementById('deleteBox');
+  var statusEl = document.getElementById('status');
+  var lastOpenedEl = document.getElementById('lastOpened');
+  var pingBtn = document.getElementById('pingBtn');
+  var pingStatusEl = document.getElementById('pingStatus');
+
+  function fmtTime(ts) {
+    if (!ts) return '';
+    var d = new Date(ts);
+    return d.getFullYear() + '/' + (d.getMonth()+1) + '/' + d.getDate() + ' ' +
+      String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+  }
+  function setStatus(msg, isError) {
+    statusEl.textContent = msg || '';
+    statusEl.classList.toggle('error', !!isError);
+  }
+  function latestActivity(box) {
+    var latest = box.ts || 0;
+    (box.replies || []).forEach(function(r){ latest = Math.max(latest, r.ts || 0); });
+    return latest;
+  }
+  function replyChars(box) {
+    return (box.replies || []).reduce(function(n,r){ return n + Array.from(r.text || '').length; }, 0);
+  }
+  function isUnread(box) {
+    var readAt = (state.readBy && state.readBy[userId] && state.readBy[userId][box.id]) || 0;
+    return latestActivity(box) > readAt;
+  }
+  function sortedBoxes() {
+    return state.boxes.slice().sort(function(a,b){
+      var ca = replyChars(a), cb = replyChars(b);
+      if (cb !== ca) return cb - ca;
+      return latestActivity(b) - latestActivity(a);
+    });
+  }
+  function renderLastOpened() {
+    if (state.lastOpenedAt) {
+      lastOpenedEl.style.display = '';
+      lastOpenedEl.textContent = '最近一次有盒子被拆開：' + fmtTime(state.lastOpenedAt);
+    } else lastOpenedEl.style.display = 'none';
+  }
+  function renderPingStatus() {
+    if (state.onlinePingAt) {
+      pingStatusEl.style.display = '';
+      pingStatusEl.textContent = '最近一次點了「我在線上，聊聊？」：' + fmtTime(state.onlinePingAt);
+    } else pingStatusEl.style.display = 'none';
+  }
+  function render() {
+    renderLastOpened();
+    renderPingStatus();
+    grid.innerHTML = '';
+    sortedBoxes().forEach(function(box){
+      var mood = MOODS[box.mood] || MOODS.random;
+      var el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'box' + (isUnread(box) ? ' unread' : '');
+      el.style.setProperty('--tint', mood.tint);
+      el.setAttribute('aria-label', mood.label + (isUnread(box) ? '，有未讀內容' : ''));
+      var count = (box.replies || []).length;
+      el.innerHTML =
+        (count ? '<span class="badge">' + count + '</span>' : '') +
+        '<span class="peek">' + mood.emoji + '</span>' +
+        (isUnread(box) ? '<span class="unreadDot" title="未讀"></span>' : '');
+      el.addEventListener('click', function(){
+        el.classList.add('bounce');
+        setTimeout(function(){el.classList.remove('bounce');},380);
+        openBox(box.id);
+      });
+      grid.appendChild(el);
+    });
+    if (!state.boxes.length) {
+      var empty = document.createElement('p');
+      empty.className = 'emptyHint';
+      empty.textContent = '盒子是空的。想到什麼，先包起來。';
+      grid.appendChild(empty);
+    }
+  }
+  function renderReplies(box) {
+    repliesList.innerHTML = '';
+    (box.replies || []).forEach(function(r){
+      var row = document.createElement('div');
+      row.className = 'reply';
+      var who = document.createElement('div');
+      who.style.cssText = 'font-size:11px;opacity:.65;margin-bottom:3px;';
+      who.textContent = (r.by === 'A' ? 'A' : r.by === 'B' ? 'B' : '成員') + ' · ' + fmtTime(r.ts);
+      var text = document.createElement('div');
+      text.style.whiteSpace = 'pre-wrap';
+      text.textContent = r.text || '';
+      row.appendChild(who);
+      row.appendChild(text);
+      repliesList.appendChild(row);
+    });
+  }
+  function resetDeleteConfirm() {
+    pendingDelete = false;
+    deleteBtn.classList.remove('confirming');
+    deleteBtn.textContent = '🗑';
+    deleteBtn.title = '刪除';
+  }
+  function mutate() {
+    dirty = true;
+    lastLocalMutation = Date.now();
+    render();
+    queueSave();
+  }
+  function queueSave() {
+    saveQueue = saveQueue.then(function(){
+      if (!dirty) return;
+      var snapshot = JSON.stringify(state);
+      dirty = false;
+      return fetch(API + '/api/state', {
+        method: 'PUT',
+        headers: {'Content-Type':'application/json','X-Access-Code':accessCode},
+        body: snapshot
+      }).then(function(res){
+        if (!res.ok) throw new Error('儲存失敗（HTTP ' + res.status + '）');
+        setStatus('已同步');
+      }).catch(function(err){
+        dirty = true;
+        setStatus(err.message || '同步失敗，請檢查網路後重試。', true);
+      });
+    });
+  }
+  function openBox(id) {
+    openBoxId = id;
+    resetDeleteConfirm();
+    var box = state.boxes.find(function(b){return b.id === id;});
+    if (!box) return;
+    var mood = MOODS[box.mood] || MOODS.random;
+    noteMeta.textContent = mood.emoji + ' ' + mood.label + (box.ts ? ' · ' + fmtTime(box.ts) : '');
+    noteText.textContent = box.text || '';
+    renderReplies(box);
+    replyInput.value = '';
+    overlay.classList.remove('hidden');
+    state.readBy = state.readBy || {};
+    state.readBy[userId] = state.readBy[userId] || {};
+    state.readBy[userId][box.id] = Date.now();
+    state.lastOpenedAt = Date.now();
+    mutate();
+  }
+  function closeNote() {
+    overlay.classList.add('hidden');
+    openBoxId = null;
+  }
+  closeNoteBtn.addEventListener('click', closeNote);
+  overlay.addEventListener('click', function(e){ if(e.target === overlay) closeNote(); });
+
+  deleteBtn.addEventListener('click', function(){
+    if (!openBoxId) return;
+    if (!pendingDelete) {
+      pendingDelete = true;
+      deleteBtn.classList.add('confirming');
+      deleteBtn.textContent = '確定?';
+      deleteBtn.title = '再按一次確定刪除';
+      return;
+    }
+    state.boxes = state.boxes.filter(function(b){return b.id !== openBoxId;});
+    closeNote();
+    mutate();
+  });
+
+  function submitReply() {
+    if (!openBoxId) return;
+    var text = replyInput.value.trim();
+    if (!text) return;
+    var box = state.boxes.find(function(b){return b.id === openBoxId;});
+    if (!box) return;
+    box.replies = box.replies || [];
+    box.replies.push({
+      id: 'r' + Date.now() + Math.random().toString(16).slice(2,6),
+      text: text, ts: Date.now(), by: userId
+    });
+    replyInput.value = '';
+    renderReplies(box);
+    state.readBy[userId][box.id] = Date.now();
+    mutate();
+  }
+  sendReplyBtn.addEventListener('click', submitReply);
+  replyInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){e.preventDefault();submitReply();}
+  });
+
+  pingBtn.addEventListener('click', function(){
+    state.onlinePingAt = Date.now();
+    pingBtn.classList.add('sent');
+    setTimeout(function(){pingBtn.classList.remove('sent');},1200);
+    mutate();
+    setStatus('已送出上線訊號');
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var text = textInput.value.trim();
+    if (!text) return;
+    if (state.boxes.length >= MAX_BOXES) {
+      setStatus('目前最多 5 個盒子，請先刪除一個。', true);
+      return;
+    }
+    var checked = form.querySelector('input[name="mood"]:checked');
+    state.boxes.push({
+      id:'b'+Date.now()+Math.random().toString(16).slice(2,6),
+      text:text, mood:checked ? checked.value : 'life',
+      ts:Date.now(), replies:[]
+    });
+    textInput.value = '';
+    mutate();
+  });
+
+  function normalizeState(s) {
+    s = s && typeof s === 'object' ? s : {};
+    s.boxes = Array.isArray(s.boxes) ? s.boxes : [];
+    s.boxes.forEach(function(b){ if(!Array.isArray(b.replies)) b.replies = []; });
+    s.readBy = s.readBy && typeof s.readBy === 'object' ? s.readBy : {};
+    s.lastOpenedAt = s.lastOpenedAt || null;
+    s.onlinePingAt = s.onlinePingAt || null;
+    return s;
+  }
+  function loadState() {
+    return fetch(API + '/api/state', {
+      headers: {'X-Access-Code':accessCode}
+    }).then(function(res){
+      if(res.status === 401) throw new Error('通行碼錯誤，請重新整理並輸入正確通行碼。');
+      if(!res.ok) throw new Error('讀取失敗（HTTP ' + res.status + '）');
+      return res.json();
+    }).then(function(payload){
+      userId = payload.user;
+      state = normalizeState(payload.state);
+      render();
+      setStatus('雲端已連線 · 使用者 ' + userId);
+    });
+  }
+  function notifyVisit() {
+    fetch(API + '/api/visit', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({event:'盲盒網站開啟'})
+    }).catch(function(){});
+  }
+
+  if (!accessCode) {
+    accessCode = window.prompt('請輸入你的盲盒信箱通行碼（由信箱建立者提供）') || '';
+  }
+  if (!accessCode) {
+    setStatus('尚未輸入通行碼。重新整理頁面即可再試。', true);
+    form.querySelectorAll('input,textarea,button').forEach(function(el){el.disabled=true;});
+    return;
+  }
+  sessionStorage.setItem('blindbox_access_code', accessCode);
+
+  loadState().then(function(){
+    notifyVisit();
+    window.setInterval(function(){
+      if (dirty || Date.now() - lastLocalMutation < 2500) return;
+      fetch(API + '/api/state', {
+        headers:{'X-Access-Code':accessCode}
+      }).then(function(res){
+        if(!res.ok) return;
+        return res.json();
+      }).then(function(payload){
+        if(!payload || dirty) return;
+        state = normalizeState(payload.state);
+        render();
+        if(openBoxId) {
+          var current = state.boxes.find(function(b){return b.id === openBoxId;});
+          if(current) {
+            noteText.textContent = current.text || '';
+            renderReplies(current);
+          } else closeNote();
+        }
+      }).catch(function(){});
+    }, POLL_MS);
+  }).catch(function(err){
+    sessionStorage.removeItem('blindbox_access_code');
+    setStatus(err.message || '無法連接雲端 API。', true);
+    window.alert(err.message || '無法連接雲端 API。請確認 Worker 已部署。');
+  });
+})();
+</script>
+<style>
+  .box.unread { box-shadow: var(--glass-shadow), inset 0 1px 0 rgba(255,255,255,.25), 0 0 0 1px rgba(255,80,100,.35); }
+  .unreadDot { position:absolute; top:7px; left:7px; width:9px; height:9px; border-radius:50%; background:#ff4d67; box-shadow:0 0 0 3px rgba(255,77,103,.18); z-index:3; }
+</style>
+</body></html>
