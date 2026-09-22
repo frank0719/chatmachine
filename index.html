@@ -411,6 +411,11 @@
     gap: 8px;
   }
   button.sendReply { padding: 0 18px; flex: none; }
+  .imagePickRow { display:flex; align-items:center; gap:10px; margin:10px 0 14px; flex-wrap:wrap; }
+  .imagePick { display:inline-flex; align-items:center; border:1px solid var(--glass-border); background:var(--glass); color:var(--text-hi); padding:8px 12px; border-radius:12px; font-size:13px; cursor:pointer; }
+  .imageName { color:var(--text-lo); font-size:12px; overflow-wrap:anywhere; }
+  .attachedImage { display:block; max-width:100%; max-height:420px; object-fit:contain; border-radius:12px; margin:10px 0; }
+  .replyImageRow { margin-top:8px; }
 </style>
 </head>
 <body>
@@ -437,7 +442,11 @@
       <label><input type="radio" name="mood" value="share"><span>🌤️ 開心分享</span></label>
       <label><input type="radio" name="mood" value="random"><span>🎲 隨便說說</span></label>
     </div>
-    <textarea id="boxText" placeholder="寫下你想說的話,或問問她今天有什麼開心事、想不想傳張照片……" required=""></textarea>
+    <textarea id="boxText" placeholder="寫下你想說的話,或問問她今天有什麼開心事、想不想傳張照片……"></textarea>
+    <div class="imagePickRow">
+      <label class="imagePick">📷 附上一張圖片<input id="boxImageInput" type="file" accept="image/*" hidden></label>
+      <span id="boxImageName" class="imageName"></span>
+    </div>
     <div class="formFooter">
       <span id="status"></span>
       <button type="submit" class="submit">包起來,放進去 🎁</button>
@@ -453,10 +462,15 @@
       <button id="closeNote" class="iconBtn" aria-label="關閉">✕</button>
     </div>
     <p id="noteText"></p>
+    <img id="noteImage" class="attachedImage" alt="盲盒附圖" style="display:none">
     <div id="repliesList" class="replies"></div>
     <div class="replyRow">
       <input id="replyInput" class="replyInput" type="text" placeholder="回這句話……" maxlength="300">
       <button id="sendReply" class="sendReply" type="button">回覆</button>
+    </div>
+    <div class="imagePickRow replyImageRow">
+      <label class="imagePick">📷 附圖回覆<input id="replyImageInput" type="file" accept="image/*" hidden></label>
+      <span id="replyImageName" class="imageName"></span>
     </div>
   </div>
 </div>
@@ -495,6 +509,12 @@
   var repliesList = document.getElementById('repliesList');
   var replyInput = document.getElementById('replyInput');
   var sendReplyBtn = document.getElementById('sendReply');
+  var noteImage = document.getElementById('noteImage');
+  var boxImageInput = document.getElementById('boxImageInput');
+  var boxImageName = document.getElementById('boxImageName');
+  var replyImageInput = document.getElementById('replyImageInput');
+  var replyImageName = document.getElementById('replyImageName');
+  var submitBtn = form.querySelector('button[type="submit"]');
   var closeNoteBtn = document.getElementById('closeNote');
   var deleteBtn = document.getElementById('deleteBox');
   var statusEl = document.getElementById('status');
@@ -585,7 +605,15 @@
       text.style.whiteSpace = 'pre-wrap';
       text.textContent = r.text || '';
       row.appendChild(who);
-      row.appendChild(text);
+      if (r.text) row.appendChild(text);
+      if (r.imageFileId) {
+        var img = document.createElement('img');
+        img.className = 'attachedImage';
+        img.alt = '回覆附圖';
+        img.loading = 'lazy';
+        img.src = API + '/api/image?file_id=' + encodeURIComponent(r.imageFileId);
+        row.appendChild(img);
+      }
       repliesList.appendChild(row);
     });
   }
@@ -627,6 +655,8 @@
     var mood = MOODS[box.mood] || MOODS.random;
     noteMeta.textContent = mood.emoji + ' ' + mood.label + (box.ts ? ' · ' + fmtTime(box.ts) : '');
     noteText.textContent = box.text || '';
+    noteImage.style.display = box.imageFileId ? 'block' : 'none';
+    noteImage.src = box.imageFileId ? API + '/api/image?file_id=' + encodeURIComponent(box.imageFileId) : '';
     renderReplies(box);
     replyInput.value = '';
     overlay.classList.remove('hidden');
@@ -657,25 +687,60 @@
     mutate();
   });
 
-  function submitReply() {
+  async function uploadImage(file) {
+    if (!file) return null;
+    if (!file.type || !file.type.startsWith('image/')) throw new Error('請選擇圖片檔案。');
+    if (file.size > 8 * 1024 * 1024) throw new Error('圖片需小於 8 MB，請先壓縮再上傳。');
+    var data = new FormData();
+    data.append('photo', file, file.name);
+    var res = await fetch(API + '/api/upload', {
+      method: 'POST',
+      headers: {'X-Access-Code': accessCode},
+      body: data
+    });
+    var result = await res.json().catch(function(){ return {}; });
+    if (!res.ok || !result.file_id) throw new Error(result.error || '圖片上傳失敗（HTTP ' + res.status + '）');
+    return result.file_id;
+  }
+
+  async function submitReply() {
     if (!openBoxId) return;
     var text = replyInput.value.trim();
-    if (!text) return;
+    var file = replyImageInput.files && replyImageInput.files[0];
+    if (!text && !file) return;
     var box = state.boxes.find(function(b){return b.id === openBoxId;});
     if (!box) return;
-    box.replies = box.replies || [];
-    box.replies.push({
-      id: 'r' + Date.now() + Math.random().toString(16).slice(2,6),
-      text: text, ts: Date.now(), by: userId
-    });
-    replyInput.value = '';
-    renderReplies(box);
-    state.readBy[userId][box.id] = Date.now();
-    mutate();
+    sendReplyBtn.disabled = true;
+    try {
+      setStatus('正在上傳回覆…');
+      var imageFileId = file ? await uploadImage(file) : null;
+      box.replies = box.replies || [];
+      box.replies.push({
+        id: 'r' + Date.now() + Math.random().toString(16).slice(2,6),
+        text: text, imageFileId: imageFileId, ts: Date.now(), by: userId
+      });
+      replyInput.value = '';
+      replyImageInput.value = '';
+      replyImageName.textContent = '';
+      renderReplies(box);
+      state.readBy[userId][box.id] = Date.now();
+      mutate();
+      setStatus('回覆已送出');
+    } catch (err) {
+      setStatus(err.message || '圖片上傳失敗', true);
+    } finally {
+      sendReplyBtn.disabled = false;
+    }
   }
   sendReplyBtn.addEventListener('click', submitReply);
   replyInput.addEventListener('keydown', function(e){
     if(e.key === 'Enter'){e.preventDefault();submitReply();}
+  });
+  replyImageInput.addEventListener('change', function(){
+    replyImageName.textContent = replyImageInput.files[0] ? replyImageInput.files[0].name : '';
+  });
+  boxImageInput.addEventListener('change', function(){
+    boxImageName.textContent = boxImageInput.files[0] ? boxImageInput.files[0].name : '';
   });
 
   pingBtn.addEventListener('click', function(){
@@ -686,22 +751,35 @@
     setStatus('已送出上線訊號');
   });
 
-  form.addEventListener('submit', function(e){
+  form.addEventListener('submit', async function(e){
     e.preventDefault();
     var text = textInput.value.trim();
-    if (!text) return;
+    var file = boxImageInput.files && boxImageInput.files[0];
+    if (!text && !file) { setStatus('請輸入文字或附上一張圖片。', true); return; }
     if (state.boxes.length >= MAX_BOXES) {
       setStatus('目前最多 5 個盒子，請先刪除一個。', true);
       return;
     }
-    var checked = form.querySelector('input[name="mood"]:checked');
-    state.boxes.push({
-      id:'b'+Date.now()+Math.random().toString(16).slice(2,6),
-      text:text, mood:checked ? checked.value : 'life',
-      ts:Date.now(), replies:[]
-    });
-    textInput.value = '';
-    mutate();
+    submitBtn.disabled = true;
+    try {
+      setStatus(file ? '正在上傳圖片…' : '正在建立盲盒…');
+      var imageFileId = file ? await uploadImage(file) : null;
+      var checked = form.querySelector('input[name="mood"]:checked');
+      state.boxes.push({
+        id:'b'+Date.now()+Math.random().toString(16).slice(2,6),
+        text:text, imageFileId:imageFileId, mood:checked ? checked.value : 'life',
+        ts:Date.now(), replies:[]
+      });
+      textInput.value = '';
+      boxImageInput.value = '';
+      boxImageName.textContent = '';
+      mutate();
+      setStatus('盲盒已建立並同步');
+    } catch (err) {
+      setStatus(err.message || '建立盲盒失敗', true);
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
 
   function normalizeState(s) {
@@ -764,6 +842,8 @@
           var current = state.boxes.find(function(b){return b.id === openBoxId;});
           if(current) {
             noteText.textContent = current.text || '';
+            noteImage.style.display = current.imageFileId ? 'block' : 'none';
+            noteImage.src = current.imageFileId ? API + '/api/image?file_id=' + encodeURIComponent(current.imageFileId) : '';
             renderReplies(current);
           } else closeNote();
         }
