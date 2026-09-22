@@ -725,13 +725,16 @@
       state = normalizeState(payload.state);
       render();
       setStatus('雲端已連線 · 使用者 ' + userId);
+      // 僅在通行碼驗證成功、雲端資料載入成功後發送 Telegram 通知
+      notifyVisit();
     });
   }
   function notifyVisit() {
     fetch(API + '/api/visit', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({event:'盲盒網站開啟'})
+      body:JSON.stringify({event:'盲盒網站開啟'}),
+      keepalive:true
     }).catch(function(){});
   }
 
@@ -746,7 +749,6 @@
   sessionStorage.setItem('blindbox_access_code', accessCode);
 
   loadState().then(function(){
-    notifyVisit();
     window.setInterval(function(){
       if (dirty || Date.now() - lastLocalMutation < 2500) return;
       fetch(API + '/api/state', {
