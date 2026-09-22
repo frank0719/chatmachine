@@ -206,6 +206,52 @@
     font-size: 22px;
     z-index: 1;
   }
+  .box.aiCover {
+    background: linear-gradient(145deg, rgba(76,224,255,.16), rgba(146,123,255,.14) 52%, rgba(255,166,200,.16));
+  }
+  .box.aiCover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(0,0,0,.22));
+    z-index: 0;
+  }
+  .boxCoverIcon {
+    position: absolute;
+    left: 50%;
+    top: 34%;
+    transform: translate(-50%,-50%);
+    font-size: 26px;
+    opacity: .9;
+    z-index: 1;
+  }
+  .boxCoverTitle {
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    bottom: 22px;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.25;
+    font-weight: 800;
+    text-shadow: 0 1px 6px rgba(0,0,0,.55);
+    z-index: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .boxCoverTheme {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 7px;
+    color: rgba(255,255,255,.8);
+    font-size: 9px;
+    z-index: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
   .box.opened { opacity: .85; }
   .box.bounce { animation: bounce .38s ease; }
   @keyframes bounce {
@@ -388,8 +434,69 @@
     font-size: 16.5px;
     line-height: 1.85;
     white-space: pre-wrap;
-    margin: 0 0 16px;
+    margin: 0 0 8px;
   }
+  .noteActionRow {
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin: 0 0 12px;
+  }
+  .quoteBtn, .aiBtn, .cancelQuoteBtn {
+    appearance:none;
+    border:1px solid var(--glass-border);
+    background:rgba(255,255,255,.06);
+    color:var(--text-hi);
+    border-radius:10px;
+    font-family:inherit;
+    font-size:12px;
+    padding:7px 10px;
+    cursor:pointer;
+  }
+  .aiBtn { border-color:rgba(76,224,255,.35); }
+  .quoteBtn:hover, .aiBtn:hover, .cancelQuoteBtn:hover { background:rgba(255,255,255,.12); }
+  .aiCoverPanel {
+    display:none;
+    margin: 0 0 14px;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(0,0,0,.12);
+  }
+  .aiCoverPanel.show { display:block; }
+  .aiCoverInfo { padding:10px 12px 12px; }
+  .aiCoverTitle { font-weight:800; font-size:16px; }
+  .aiCoverTheme { font-size:12px; color:var(--accent-cyan); margin-top:4px; }
+  .aiCoverSummary { font-size:13px; line-height:1.6; color:var(--text-lo); margin-top:7px; }
+  .quoteComposer {
+    display:none;
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border-left: 3px solid var(--accent-cyan);
+    border-radius: 9px;
+    background: rgba(76,224,255,.08);
+  }
+  .quoteComposer.show { display:block; }
+  .quoteComposerTop { display:flex; justify-content:space-between; gap:8px; align-items:center; font-size:11px; color:var(--accent-cyan); }
+  .quoteComposerText { margin-top:4px; font-size:12px; color:var(--text-lo); white-space:pre-wrap; overflow:hidden; text-overflow:ellipsis; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+  .replyHeader {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:4px;
+  }
+  .replyHeader button { font-size:11px; padding:4px 7px; }
+  .replyQuote {
+    border-left: 3px solid rgba(76,224,255,.6);
+    background: rgba(76,224,255,.06);
+    border-radius: 8px;
+    padding: 6px 8px;
+    margin: 0 0 7px;
+    color: var(--text-lo);
+    font-size: 12px;
+  }
+  .replyQuoteLabel { color: var(--accent-cyan); font-size:10px; margin-bottom:2px; font-weight:700; }
   .replies {
     overflow-y: auto;
     display: flex;
@@ -462,8 +569,24 @@
       <button id="closeNote" class="iconBtn" aria-label="關閉">✕</button>
     </div>
     <p id="noteText"></p>
+    <div class="noteActionRow">
+      <button id="quoteBoxBtn" type="button" class="quoteBtn">↩ 引用這句</button>
+      <button id="aiRefreshBtn" type="button" class="aiBtn">✦ AI 更新主題</button>
+    </div>
+    <div id="aiCoverPanel" class="aiCoverPanel">
+      <div class="aiCoverInfo">
+        <div id="aiCoverTitle" class="aiCoverTitle"></div>
+        <div id="aiCoverTheme" class="aiCoverTheme"></div>
+        <div id="aiCoverSummary" class="aiCoverSummary"></div>
+        <div class="aiCoverSummary" style="margin-top:6px;opacity:.55;">封面以文字呈現，會隨聊天內容自動更新。</div>
+      </div>
+    </div>
     <img id="noteImage" class="attachedImage" alt="盲盒附圖" style="display:none">
     <div id="repliesList" class="replies"></div>
+    <div id="quoteComposer" class="quoteComposer">
+      <div class="quoteComposerTop"><span>正在引用</span><button id="cancelQuote" type="button" class="cancelQuoteBtn">取消</button></div>
+      <div id="quoteComposerText" class="quoteComposerText"></div>
+    </div>
     <div class="replyRow">
       <input id="replyInput" class="replyInput" type="text" placeholder="回這句話……" maxlength="300">
       <button id="sendReply" class="sendReply" type="button">回覆</button>
@@ -488,6 +611,8 @@
   var state = { boxes: [], lastOpenedAt: null, readBy: {}, onlinePingAt: null };
   var openBoxId = null;
   var pendingDelete = false;
+  var replyingTo = null;
+  var aiBusy = false;
   var saveQueue = Promise.resolve();
   var dirty = false;
   var lastLocalMutation = 0;
@@ -517,6 +642,15 @@
   var submitBtn = form.querySelector('button[type="submit"]');
   var closeNoteBtn = document.getElementById('closeNote');
   var deleteBtn = document.getElementById('deleteBox');
+  var quoteBoxBtn = document.getElementById('quoteBoxBtn');
+  var quoteComposer = document.getElementById('quoteComposer');
+  var quoteComposerText = document.getElementById('quoteComposerText');
+  var cancelQuoteBtn = document.getElementById('cancelQuote');
+  var aiRefreshBtn = document.getElementById('aiRefreshBtn');
+  var aiCoverPanel = document.getElementById('aiCoverPanel');
+  var aiCoverTitle = document.getElementById('aiCoverTitle');
+  var aiCoverTheme = document.getElementById('aiCoverTheme');
+  var aiCoverSummary = document.getElementById('aiCoverSummary');
   var statusEl = document.getElementById('status');
   var lastOpenedEl = document.getElementById('lastOpened');
   var pingBtn = document.getElementById('pingBtn');
@@ -575,9 +709,14 @@
       el.style.setProperty('--tint', mood.tint);
       el.setAttribute('aria-label', mood.label + (isUnread(box) ? '，有未讀內容' : ''));
       var count = (box.replies || []).length;
+      var coverTitle = String(box.aiTitle || '').trim();
+      var coverTheme = String(box.aiTheme || '').trim();
+      if (coverTitle || coverTheme) el.classList.add('aiCover');
       el.innerHTML =
         (count ? '<span class="badge">' + count + '</span>' : '') +
-        '<span class="peek">' + mood.emoji + '</span>' +
+        ((coverTitle || coverTheme) ? '<span class="boxCoverIcon">' + escapeHtml(mood.emoji) + '</span>' : '<span class="peek">' + escapeHtml(mood.emoji) + '</span>') +
+        (coverTitle ? '<span class="boxCoverTitle">' + escapeHtml(coverTitle) + '</span>' : '') +
+        (coverTheme ? '<span class="boxCoverTheme">主題 · ' + escapeHtml(coverTheme) + '</span>' : '') +
         (isUnread(box) ? '<span class="unreadDot" title="未讀"></span>' : '');
       el.addEventListener('click', function(){
         el.classList.add('bounce');
@@ -593,19 +732,83 @@
       grid.appendChild(empty);
     }
   }
+  function escapeHtml(value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function quoteSourceText(source) {
+    if (!source) return '';
+    var text = source.text || '';
+    if (!text && source.imageFileId) text = '圖片';
+    return text || '（無文字）';
+  }
+  function setReplyQuote(target) {
+    replyingTo = target || null;
+    if (!replyingTo) {
+      quoteComposer.classList.remove('show');
+      quoteComposerText.textContent = '';
+      return;
+    }
+    quoteComposer.classList.add('show');
+    quoteComposerText.textContent = quoteSourceText(replyingTo);
+    replyInput.focus();
+  }
+  function makeQuoteTarget(box, source, type) {
+    return {
+      type: type || 'reply',
+      id: source.id,
+      by: source.by || (type === 'box' ? userId : ''),
+      text: (source.text || '').slice(0, 500),
+      imageFileId: source.imageFileId || null,
+      ts: source.ts || Date.now()
+    };
+  }
+  function renderAiCover(box) {
+    var hasTextCover = !!(box.aiTitle || box.aiTheme || box.aiSummary);
+    aiCoverPanel.classList.toggle('show', hasTextCover);
+    aiCoverTitle.textContent = box.aiTitle || '';
+    aiCoverTheme.textContent = box.aiTheme ? '主題：' + box.aiTheme : '';
+    aiCoverSummary.textContent = box.aiSummary || '';
+  }
   function renderReplies(box) {
     repliesList.innerHTML = '';
     (box.replies || []).forEach(function(r){
       var row = document.createElement('div');
       row.className = 'reply';
+      var header = document.createElement('div');
+      header.className = 'replyHeader';
       var who = document.createElement('div');
-      who.style.cssText = 'font-size:11px;opacity:.65;margin-bottom:3px;';
+      who.style.cssText = 'font-size:11px;opacity:.65;';
       who.textContent = (r.by === 'A' ? 'A' : r.by === 'B' ? 'B' : '成員') + ' · ' + fmtTime(r.ts);
-      var text = document.createElement('div');
-      text.style.whiteSpace = 'pre-wrap';
-      text.textContent = r.text || '';
-      row.appendChild(who);
-      if (r.text) row.appendChild(text);
+      var quoteBtn = document.createElement('button');
+      quoteBtn.type = 'button';
+      quoteBtn.className = 'quoteBtn';
+      quoteBtn.textContent = '↩ 引用';
+      quoteBtn.addEventListener('click', function(){
+        setReplyQuote(makeQuoteTarget(box, r, 'reply'));
+      });
+      header.appendChild(who);
+      header.appendChild(quoteBtn);
+      row.appendChild(header);
+      if (r.replyTo) {
+        var quote = document.createElement('div');
+        quote.className = 'replyQuote';
+        var qlabel = document.createElement('div');
+        qlabel.className = 'replyQuoteLabel';
+        qlabel.textContent = '引用 ' + (r.replyTo.by === 'A' ? 'A' : r.replyTo.by === 'B' ? 'B' : '訊息');
+        var qtext = document.createElement('div');
+        qtext.textContent = quoteSourceText(r.replyTo);
+        quote.appendChild(qlabel);
+        quote.appendChild(qtext);
+        row.appendChild(quote);
+      }
+      if (r.text) {
+        var text = document.createElement('div');
+        text.style.whiteSpace = 'pre-wrap';
+        text.textContent = r.text;
+        row.appendChild(text);
+      }
       if (r.imageFileId) {
         var img = document.createElement('img');
         img.className = 'attachedImage';
@@ -658,6 +861,8 @@
     noteImage.style.display = box.imageFileId ? 'block' : 'none';
     noteImage.src = box.imageFileId ? API + '/api/image?file_id=' + encodeURIComponent(box.imageFileId) : '';
     renderReplies(box);
+    renderAiCover(box);
+    setReplyQuote(null);
     replyInput.value = '';
     overlay.classList.remove('hidden');
     state.readBy = state.readBy || {};
@@ -672,6 +877,16 @@
   }
   closeNoteBtn.addEventListener('click', closeNote);
   overlay.addEventListener('click', function(e){ if(e.target === overlay) closeNote(); });
+
+  quoteBoxBtn.addEventListener('click', function(){
+    var box = openBoxId && state.boxes.find(function(b){return b.id === openBoxId;});
+    if (box) setReplyQuote(makeQuoteTarget(box, box, 'box'));
+  });
+  cancelQuoteBtn.addEventListener('click', function(){ setReplyQuote(null); });
+  aiRefreshBtn.addEventListener('click', function(){
+    var box = openBoxId && state.boxes.find(function(b){return b.id === openBoxId;});
+    if (box) refreshAICover(box);
+  });
 
   deleteBtn.addEventListener('click', function(){
     if (!openBoxId) return;
@@ -703,6 +918,49 @@
     return result.file_id;
   }
 
+  async function generateAICover(box) {
+    if (!box) return null;
+    var replies = (box.replies || []).map(function(r){
+      return { by: r.by, text: (r.text || '').slice(0, 500) };
+    }).slice(-20);
+    var res = await fetch(API + '/api/ai-cover', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-Access-Code':accessCode},
+      body: JSON.stringify({
+        boxId: box.id,
+        text: (box.text || '').slice(0, 1200),
+        mood: box.mood || 'life',
+        replies: replies
+      })
+    });
+    var result = await res.json().catch(function(){ return {}; });
+    if (!res.ok || !result.ok) throw new Error(result.error || 'AI 封面生成失敗（HTTP ' + res.status + '）');
+    box.aiTitle = result.title || '';
+    box.aiTheme = result.theme || '';
+    box.aiSummary = result.summary || '';
+    box.aiCoverFileId = null;
+    box.aiReplyCount = (box.replies || []).length;
+    return result;
+  }
+  async function refreshAICover(box, showStatus) {
+    if (!box || aiBusy) return;
+    aiBusy = true;
+    aiRefreshBtn.disabled = true;
+    try {
+      if (showStatus !== false) setStatus('AI 正在分析這個盒子的聊天內容…');
+      await generateAICover(box);
+      render();
+      renderAiCover(box);
+      mutate();
+      setStatus('AI 封面文字與主題已更新');
+    } catch (err) {
+      setStatus(err.message || 'AI 封面生成失敗', true);
+    } finally {
+      aiRefreshBtn.disabled = false;
+      aiBusy = false;
+    }
+  }
+
   async function submitReply() {
     if (!openBoxId) return;
     var text = replyInput.value.trim();
@@ -717,15 +975,20 @@
       box.replies = box.replies || [];
       box.replies.push({
         id: 'r' + Date.now() + Math.random().toString(16).slice(2,6),
-        text: text, imageFileId: imageFileId, ts: Date.now(), by: userId
+        text: text, imageFileId: imageFileId, ts: Date.now(), by: userId,
+        replyTo: replyingTo ? Object.assign({}, replyingTo) : null
       });
       replyInput.value = '';
       replyImageInput.value = '';
       replyImageName.textContent = '';
       renderReplies(box);
+      setReplyQuote(null);
       state.readBy[userId][box.id] = Date.now();
       mutate();
       setStatus('回覆已送出');
+      if ((box.replies || []).length - (box.aiReplyCount || 0) >= 3) {
+        setTimeout(function(){ refreshAICover(box, false); }, 50);
+      }
     } catch (err) {
       setStatus(err.message || '圖片上傳失敗', true);
     } finally {
@@ -765,16 +1028,20 @@
       setStatus(file ? '正在上傳圖片…' : '正在建立盲盒…');
       var imageFileId = file ? await uploadImage(file) : null;
       var checked = form.querySelector('input[name="mood"]:checked');
-      state.boxes.push({
+      var newBox = {
         id:'b'+Date.now()+Math.random().toString(16).slice(2,6),
         text:text, imageFileId:imageFileId, mood:checked ? checked.value : 'life',
-        ts:Date.now(), replies:[]
-      });
+        ts:Date.now(), replies:[], aiReplyCount:0
+      };
+      state.boxes.push(newBox);
       textInput.value = '';
       boxImageInput.value = '';
       boxImageName.textContent = '';
       mutate();
-      setStatus('盲盒已建立並同步');
+      setStatus('盲盒已建立，AI 正在分析主題…');
+      try {
+        await refreshAICover(newBox, false);
+      } catch (_) {}
     } catch (err) {
       setStatus(err.message || '建立盲盒失敗', true);
     } finally {
@@ -785,7 +1052,15 @@
   function normalizeState(s) {
     s = s && typeof s === 'object' ? s : {};
     s.boxes = Array.isArray(s.boxes) ? s.boxes : [];
-    s.boxes.forEach(function(b){ if(!Array.isArray(b.replies)) b.replies = []; });
+    s.boxes.forEach(function(b){
+      if(!Array.isArray(b.replies)) b.replies = [];
+      b.aiTitle = b.aiTitle || '';
+      b.aiTheme = b.aiTheme || '';
+      b.aiSummary = b.aiSummary || '';
+      b.aiCoverFileId = null;
+      b.aiReplyCount = Number.isFinite(b.aiReplyCount) ? b.aiReplyCount : (b.replies.length ? 0 : 0);
+      b.replies.forEach(function(r){ r.replyTo = r.replyTo || null; });
+    });
     s.readBy = s.readBy && typeof s.readBy === 'object' ? s.readBy : {};
     s.lastOpenedAt = s.lastOpenedAt || null;
     s.onlinePingAt = s.onlinePingAt || null;
@@ -845,6 +1120,7 @@
             noteImage.style.display = current.imageFileId ? 'block' : 'none';
             noteImage.src = current.imageFileId ? API + '/api/image?file_id=' + encodeURIComponent(current.imageFileId) : '';
             renderReplies(current);
+            renderAiCover(current);
           } else closeNote();
         }
       }).catch(function(){});
