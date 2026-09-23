@@ -605,6 +605,10 @@
   .petDust{position:fixed;z-index:1;width:5px;height:5px;border-radius:50%;background:rgba(201,248,255,.7);box-shadow:0 0 8px rgba(76,224,255,.45);pointer-events:none;animation:petDustFly .6s ease-out forwards}
   @keyframes petWalkA{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(-13deg) translateY(-4px)}}@keyframes petWalkB{0%,100%{transform:rotate(-13deg) translateY(-4px)}50%{transform:rotate(13deg) translateY(0)}}@keyframes petTailIdle{0%,100%{transform:rotate(0deg)}45%{transform:rotate(9deg)}72%{transform:rotate(-8deg)}}@keyframes petHeadRub{0%,100%{transform:translateX(0) rotate(0)}24%{transform:translateX(-11px) rotate(-4deg)}52%{transform:translateX(9px) rotate(4deg)}78%{transform:translateX(-6px) rotate(-2deg)}}@keyframes petBelly{0%{transform:translateY(0) rotate(0)}35%{transform:translateY(18px) rotate(42deg)}72%{transform:translateY(20px) rotate(82deg)}100%{transform:translateY(0) rotate(0)}}@keyframes petBackflip{0%{transform:translateY(0) rotate(0) scale(1)}23%{transform:translateY(-20px) rotate(90deg) scale(1.01)}50%{transform:translateY(-52px) rotate(180deg) scale(1.03)}76%{transform:translateY(-20px) rotate(270deg) scale(1.01)}100%{transform:translateY(0) rotate(360deg) scale(1)}}@keyframes petShadowFlip{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.48}50%{transform:translateX(-50%) scaleX(.52);opacity:.16}}@keyframes petGrin{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-3px) scale(1.03)}70%{transform:translateY(0) scale(1)}}@keyframes petXpFlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}@keyframes petDustFly{from{opacity:.75;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(-8px,18px) scale(.2)}}
   @media (prefers-reduced-motion:reduce){.petActor,.petSvg,.petCanvas,.petTail,.petLeg,.petProgress span{animation:none!important}.petActor.is-rub .petHead,.petActor.is-belly .petBody,.petActor.is-grin .petBody,.petActor.is-flip .petBody,.petActor.is-flip .petShadow{animation:none!important}}
+  .petMenu{position:fixed;z-index:26;display:flex;gap:6px;flex-wrap:wrap;max-width:230px;padding:7px;border:1px solid rgba(255,255,255,.2);border-radius:15px;background:rgba(9,13,21,.9);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 14px 34px rgba(0,0,0,.35);opacity:0;transform:translate(-50%,6px) scale(.96);pointer-events:none;transition:opacity .16s ease,transform .16s ease}.petMenu.show{opacity:1;transform:translate(-50%,0) scale(1);pointer-events:auto}.petMenu button{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text-hi);border-radius:10px;padding:7px 9px;font:inherit;font-size:11px;cursor:pointer}.petMenu button:hover{background:rgba(255,255,255,.12)}
+  .petActor.mood-hungry .petShadow{background:radial-gradient(ellipse at center,rgba(255,184,92,.16),transparent 70%)}.petActor.mood-sleepy .petShadow{opacity:.55}.petActor.mood-grumpy .petShadow{background:radial-gradient(ellipse at center,rgba(255,96,96,.17),transparent 70%)}.petActor.mood-excited .petShadow{background:radial-gradient(ellipse at center,rgba(255,220,100,.2),transparent 70%)}
+  .petActor.stage-tiger .petCanvas{transform-origin:center 72%;filter:drop-shadow(0 5px 3px rgba(255,166,0,.14))}.petActor.stage-starTiger .petCanvas{filter:drop-shadow(0 0 7px rgba(255,210,110,.26))}
+  .gameTextAnswer{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.18);color:var(--text-hi);font:inherit;font-size:14px}.gameJudgeBox{width:100%;padding:11px;border-radius:13px;background:rgba(76,224,255,.07);border:1px solid rgba(76,224,255,.18);font-size:12px;line-height:1.55;color:var(--text-lo)}
   @media (max-width:620px){.petBar{align-items:flex-start;flex-direction:column;gap:9px}.petProgressWrap{width:100%;min-width:0}.petActor{width:164px;height:122px;top:74%}.petSvg{width:164px;height:118px}.petShadow{width:105px}.petMood{max-width:160px}.petHint{display:none}.petBubble{max-width:150px;font-size:10.5px}}
   .gameOverlay{position:fixed;inset:0;z-index:40;background:rgba(2,4,12,.55);display:flex;align-items:flex-end;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}.gameOverlay.hidden{display:none}.gameCard{position:relative;width:min(520px,100%);padding:20px 18px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.26);background:linear-gradient(145deg,rgba(24,27,49,.97),rgba(8,29,34,.97));box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 35px rgba(76,224,255,.12);animation:gameIn .22s ease-out}.gameOverlay.hidden .gameCard{animation:none}@keyframes gameIn{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}.gameClose{position:absolute;top:11px;right:11px;width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text-lo);cursor:pointer}.gameMascot{text-align:center;font-size:34px;margin:2px 0 6px}.gameEyebrow{text-align:center;font-size:11px;color:var(--accent-cyan);font-weight:700;letter-spacing:.04em}.gameTitle{text-align:center;font-size:20px;font-weight:800;margin:6px 32px 8px}.gamePrompt{text-align:center;color:var(--text-lo);line-height:1.7;font-size:14px;margin:0 auto 14px;max-width:34em}.gameChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gameChoice,.gameAction{appearance:none;width:100%;min-height:46px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.07);color:var(--text-hi);font:inherit;font-weight:650;cursor:pointer}.gameChoice:hover,.gameAction:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}.gameActionRow:empty{display:none}.gameActionRow{display:flex;gap:9px;margin-top:9px}.gameActionRow .gameAction{flex:1}.gameReward{min-height:20px;margin-top:10px;text-align:center;font-size:12px;color:#c9f8ff}.gameSkip{display:block;margin:10px auto 0;border:0;background:transparent;color:var(--text-lo);font:inherit;font-size:11px;cursor:pointer}.gameSkip:hover{color:var(--text-hi)}
   @media (max-width:420px){.petBar{align-items:flex-start;flex-direction:column}.petProgressWrap{width:100%;}.gameChoices{grid-template-columns:1fr}}
@@ -616,7 +620,7 @@
   <header>
     <div class="statusLine"><span class="dot"></span>私人頻道 · 連線中</div>
     <h1>Frank &amp; Yuan 的小宇宙</h1>
-    <p class="usageHint">把想說的放進盲盒 → 回來看看彼此的回覆 → AI 會在適合的時候叫小雲出來玩。</p>
+    <p class="usageHint">把想說的放進盲盒 → 回來看看彼此的回覆 → AI 會在適合的時候叫麻糬出來玩。</p>
     <span id="lastOpened" class="lastOpened" style="display:none;"></span>
     <div class="pingRow">
       <div class="headerActions">
@@ -630,16 +634,22 @@
   <section id="boxGrid" class="grid"></section>
 
   <section id="petBar" class="petBar" style="display:none;">
-    <div class="petHud"><span class="petHudFace">🐾</span><div><span class="petHudName" id="petName">小雲</span><span class="petLevel">Lv.<span id="petLevel">1</span></span><span id="petMood" class="petMood">今天心情不錯</span><span class="petHint">像素貓咪 · 點牠、拖牠、滑牠都會有反應</span></div></div>
+    <div class="petHud"><span class="petHudFace">🐾</span><div><span class="petHudName" id="petName">麻糬</span><span class="petLevel">Lv.<span id="petLevel">1</span></span><span class="petLevel" id="petStage">小貓</span><span id="petMood" class="petMood">今天心情不錯</span><span id="petNeeds" class="petHint">飢餓 78 · 活力 82 · 心情 86</span></div></div>
     <div class="petProgressWrap"><div class="petProgress"><span id="petXpFill"></span></div><div id="petXpText" class="petXpText">0 / 100</div></div>
   </section>
 
   <div id="petWanderLayer" class="petWanderLayer" aria-hidden="true">
-    <div id="petActor" class="petActor" role="button" tabindex="0" aria-label="小雲，會自己到處跑的像素貓咪" data-dir="1">
+    <div id="petActor" class="petActor" role="button" tabindex="0" aria-label="麻糬，會自己到處跑的貓咪" data-dir="1">
       <div class="petShadow"></div>
-      <canvas id="petCanvas" class="petSvg petCanvas" width="80" height="56" role="img" aria-label="小雲，橘白像素貓咪"></canvas>
+      <canvas id="petCanvas" class="petSvg petCanvas" width="80" height="56" role="img" aria-label="麻糬，可愛橘白貓咪"></canvas>
     </div>
     <div id="petBubble" class="petBubble"></div>
+    <div id="petMenu" class="petMenu" aria-hidden="true">
+      <button type="button" data-pet-action="feed-can">🍗 罐罐</button>
+      <button type="button" data-pet-action="feed-treat">🐟 小魚乾</button>
+      <button type="button" data-pet-action="pet">🤍 摸摸</button>
+      <button type="button" data-pet-action="play">🧶 陪玩</button>
+    </div>
   </div>
 
   <form id="addForm">
@@ -671,7 +681,7 @@
   <div class="gameCard">
     <button id="gameClose" type="button" class="gameClose" aria-label="暫時不玩">✕</button>
     <div id="gameMascot" class="gameMascot">🐱</div>
-    <div id="gameEyebrow" class="gameEyebrow">小雲剛剛想到一個</div>
+    <div id="gameEyebrow" class="gameEyebrow">麻糬剛剛想到一個</div>
     <div id="gameTitle" class="gameTitle"></div>
     <div id="gamePrompt" class="gamePrompt"></div>
     <div id="gameChoices" class="gameChoices"></div>
@@ -794,7 +804,9 @@
   var petBar = document.getElementById('petBar');
   var petNameEl = document.getElementById('petName');
   var petLevelEl = document.getElementById('petLevel');
+  var petStageEl = document.getElementById('petStage');
   var petMoodEl = document.getElementById('petMood');
+  var petNeedsEl = document.getElementById('petNeeds');
   var petXpFill = document.getElementById('petXpFill');
   var petXpText = document.getElementById('petXpText');
   var currentGameEventId = '';
@@ -1091,6 +1103,7 @@
   var petSvg = document.getElementById('petCanvas');
   var petCtx = petSvg ? petSvg.getContext('2d') : null;
   var petBubble = document.getElementById('petBubble');
+  var petMenu = document.getElementById('petMenu');
   var petModeTimer = null;
   var petBubbleTimer = null;
   var petState = { x: 0, y: 0, vx: 42, targetX: 0, walking: true, dragging: false, lastT: 0, lastPointerX: 0, lastPointerY: 0, pointerStartX: 0, pointerStartY: 0, pointerStartT: 0, lastSwipeDir: 0, swipeCount: 0, initialized:false, roamTimer:null, trickTimer:null };
@@ -1103,6 +1116,9 @@
     c.clearRect(0,0,80,56); c.imageSmoothingEnabled=false;
     var mode=['rub','belly','grin','flip'].find(function(m){return petActor.classList.contains('is-'+m)});
     var run=petActor.classList.contains('is-running');
+    var pet=(state.game&&state.game.pet)||{};
+    var moodKey=pet.moodKey||'happy';
+    var stage=(pet.stage&&pet.stage.id)||'kitten';
     var bob=walk ? (Math.sin(t*(run?22:12))>0?1:-1) : Math.sin(t*2.2)*.5;
     var leg=Math.floor(t*(run?16:8))%2;
     function px(x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),w,h)}
@@ -1112,8 +1128,10 @@
     c.save();
     if(mode==='belly'){c.translate(40,30);c.rotate(.18);c.translate(-40,-30)}
     // fluffy tail, with alternating pixels
-    var wag=Math.round(Math.sin(t*3.1)*2);
-    px(53,24+bob,7,5,orange);px(58,19+bob+wag,5,7,gold);px(61,14+bob+wag,5,7,orange);px(63,10+bob+wag,5,6,gold);px(65,8+bob+wag,4,4,cream);
+    var tailAmp=moodKey==='happy'?3:moodKey==='excited'?5:moodKey==='hungry'?1:moodKey==='sleepy'?0.6:moodKey==='grumpy'?6:2;
+    var tailSpeed=moodKey==='excited'?5.2:moodKey==='grumpy'?7.0:moodKey==='sleepy'?1.4:3.1;
+    var wag=Math.sin(t*tailSpeed)*tailAmp;
+    px(53,24+bob,7,5,orange);px(58,19+bob+wag,5,7,gold);px(61,14+bob+wag*1.15,5,7,orange);px(63,10+bob+wag*1.25,5,6,gold);px(65,8+bob+wag*1.35,4,4,cream);
     // rear/front legs, offset phases create a walk/run cycle
     var l1=walk?(leg?2:0):0, l2=walk?(leg?0:2):0;
     px(24+(walk&&leg?2:0),35+bob,7,12-l1,shade);px(25+(walk&&leg?2:0),43+bob-l1,7,4,cream);
@@ -1150,17 +1168,17 @@
   }
 
   function renderPet() {
-    var game = state.game || {};
-    var pet = game.pet || {};
-    var xp = Math.max(0, Number(pet.xp || game.xp || 0));
-    var level = Math.max(1, Number(pet.level || game.level || (Math.floor(xp / 100) + 1)));
-    var intoLevel = xp % 100;
-    petNameEl.textContent = pet.name || '小雲';
-    petLevelEl.textContent = String(level);
-    petMoodEl.textContent = pet.mood || '今天心情不錯';
-    petXpFill.style.width = Math.min(100, intoLevel) + '%';
-    petXpText.textContent = intoLevel + ' / 100';
-    petBar.style.display = 'flex';
+    var game=state.game||{}; var pet=game.pet||{};
+    var xp=Math.max(0,Number(pet.xp||game.xp||0));
+    var level=Math.max(1,Number(pet.level||game.level||(Math.floor(xp/100)+1)));
+    var intoLevel=xp%100;
+    var stage=pet.stage||({id:level<5?'kitten':level<10?'young':level<20?'spirit':level<30?'tiger':'starTiger',name:level<5?'小貓':level<10?'成長貓':level<20?'靈貓':level<30?'幻虎':'星辰虎'});
+    petNameEl.textContent=pet.name||'麻糬'; petLevelEl.textContent=String(level); if(petStageEl)petStageEl.textContent=stage.name||'小貓';
+    petMoodEl.textContent=pet.mood||'今天心情不錯';
+    if(petNeedsEl) petNeedsEl.textContent='飢餓 '+Math.round(Number(pet.hunger??78))+' · 活力 '+Math.round(Number(pet.energy??82))+' · 心情 '+Math.round(Number(pet.happiness??86));
+    petXpFill.style.width=Math.min(100,intoLevel)+'%'; petXpText.textContent=intoLevel+' / 100'; petBar.style.display='flex';
+    petActor.classList.remove('stage-kitten','stage-young','stage-spirit','stage-tiger','stage-starTiger','mood-happy','mood-content','mood-excited','mood-hungry','mood-sleepy','mood-grumpy');
+    petActor.classList.add('stage-'+(stage.id||'kitten'),'mood-'+(pet.moodKey||'happy'));
     initPetRoaming();
   }
 
@@ -1226,7 +1244,7 @@
     petState.vx = Math.random() > .5 ? 560 : -560;
     petState.walking = true;
     petActor.classList.add('is-running');
-    showPetBubble('小雲開始暴走了！', 1500);
+    showPetBubble('麻糬開始暴走了！', 1500);
     var loops = 0;
     var runTimer = setInterval(function(){
       loops++;
@@ -1287,6 +1305,7 @@
       petActor.setPointerCapture(e.pointerId);
       petActor.classList.remove('is-walking','is-running');
       if (petBubble) petBubble.classList.remove('show');
+      hidePetMenu();
     });
     petActor.addEventListener('pointermove', function(e){
       if (!petState.dragging) return;
@@ -1314,9 +1333,8 @@
       var dx = e.clientX - petState.pointerStartX;
       var elapsed = Math.max(40, performance.now() - petState.pointerStartT);
       if (Math.abs(dx) < 10 && elapsed < 500) {
-        var mode = petModes[Math.floor(Math.random()*petModes.length)];
-        var moods = {rub:'跑來蹭你一下',belly:'突然翻肚了……',grin:'欸！露牙給你看',flip:'看我的後空翻！'};
-        playPetMode(mode, moods[mode]);
+        showPetMenu();
+        playPetMode('rub','麻糬來蹭你了');
       } else {
         var swipeSpeed = Math.max(-700, Math.min(700, dx / (elapsed/1000)));
         petState.vx = swipeSpeed || (dx >= 0 ? 180 : -180);
@@ -1329,21 +1347,46 @@
     petActor.addEventListener('keydown', function(e){
       if(e.key==='Enter' || e.key===' '){ e.preventDefault(); var mode=petModes[Math.floor(Math.random()*petModes.length)]; var moods={rub:'來蹭一下',belly:'翻肚給你看',grin:'嘿嘿',flip:'後空翻！'}; playPetMode(mode,moods[mode]); }
     });
+    if(petMenu) petMenu.querySelectorAll('button[data-pet-action]').forEach(function(btn){
+      btn.addEventListener('click',function(e){e.stopPropagation();petAction(btn.getAttribute('data-pet-action'));});
+    });
+    document.addEventListener('pointerdown',function(e){ if(petMenu&&petMenu.classList.contains('show')&&!petMenu.contains(e.target)&&e.target!==petActor) hidePetMenu(); });
+
     petState.roamTimer = setInterval(function(){
       if (petState.dragging || !gameOverlay.classList.contains('hidden')) return;
       if (Math.random() < .75) choosePetTarget();
-      else if (Math.random() < .5) playPetMode('rub','小雲自己跑來蹭一下');
+      else if (Math.random() < .5) playPetMode('rub','麻糬自己跑來蹭一下');
     }, 3800);
     petState.trickTimer = setInterval(function(){
       if (petState.dragging || !gameOverlay.classList.contains('hidden')) return;
       var r = Math.random();
-      if (r < .28) playPetMode('rub','小雲突然跑來蹭你');
-      else if (r < .48) playPetMode('belly','小雲翻肚躺一下');
-      else if (r < .66) playPetMode('grin','小雲偷偷露牙');
-      else if (r < .78) playPetMode('flip','小雲突然後空翻');
+      if (r < .28) playPetMode('rub','麻糬突然跑來蹭你');
+      else if (r < .48) playPetMode('belly','麻糬翻肚躺一下');
+      else if (r < .66) playPetMode('grin','麻糬偷偷露牙');
+      else if (r < .78) playPetMode('flip','麻糬突然後空翻');
     }, 11000);
     requestAnimationFrame(petTick);
   }
+
+  function hidePetMenu(){ if(petMenu){petMenu.classList.remove('show');petMenu.setAttribute('aria-hidden','true');} }
+  function showPetMenu(){
+    if(!petMenu||!petActor)return;
+    petMenu.style.left=petState.x+'px'; petMenu.style.top=Math.max(80,petState.y-20)+'px';
+    petMenu.classList.add('show'); petMenu.setAttribute('aria-hidden','false');
+  }
+  async function petAction(action){
+    hidePetMenu();
+    if(action==='pet'){ playPetMode('rub','麻糬舒服地蹭過來'); }
+    else if(action==='play'){ playPetMode('flip','麻糬玩得太嗨，翻個筋斗！'); }
+    try{
+      var res=await fetch(API+'/api/pet-action',{method:'POST',headers:{'Content-Type':'application/json','X-Access-Code':accessCode},body:JSON.stringify({action:action==='feed-can'||action==='feed-treat'?'feed':action,food:action==='feed-can'?'can':'treat'})});
+      var result=await res.json().catch(function(){return {}});
+      if(!res.ok||!result.ok)throw new Error(result.error||'寵物互動失敗');
+      if(result.game)state.game=result.game; renderPet();
+      showPetBubble(result.message||'',1700);
+    }catch(err){ setStatus(err.message||'寵物互動失敗',true); }
+  }
+
 
   function hideGameEvent() {
     gameOverlay.classList.add('hidden');
@@ -1354,48 +1397,39 @@
     return ({guess:'🔎', truth:'💬', dare:'🎲', topic:'💡', memory:'🌙', cat:'🐱'})[type] || '🐱';
   }
   function eventLabel(type) {
-    return ({guess:'小雲發現一個線索', truth:'小雲想問你一件事', dare:'小雲說：來玩一個小挑戰', topic:'小雲想到一個可以聊的', memory:'小雲記得一件事', cat:'小雲突然來撒嬌'})[type] || '小雲有個小遊戲';
+    return ({guess:'麻糬發現一個線索', truth:'麻糬想問你一件事', dare:'麻糬說：來玩一個小挑戰', topic:'麻糬想到一個可以聊的', memory:'麻糬記得一件事', cat:'麻糬突然來撒嬌'})[type] || '麻糬有個小遊戲';
   }
   function renderGameEvent() {
-    var ev = state.game && state.game.activeEvent;
-    if (!ev || !ev.id) {
-      hideGameEvent();
-      return;
+    var ev=state.game&&state.game.activeEvent;
+    if(!ev||!ev.id){hideGameEvent();return;}
+    var dismissed=Array.isArray(ev.dismissedBy)&&ev.dismissedBy.indexOf(userId)>=0;
+    if(ev.completedAt||dismissed){if(currentGameEventId===ev.id)hideGameEvent();return;}
+    var newEvent=currentGameEventId!==ev.id; currentGameEventId=ev.id;
+    gameMascot.textContent=eventEmoji(ev.type);
+    if(newEvent&&ev.type==='cat')playPetMode('rub','麻糬跑來蹭你一下');
+    gameEyebrow.textContent=eventLabel(ev.type); gameTitle.textContent=ev.title||'玩一個小遊戲'; gamePrompt.textContent=ev.prompt||'';
+    gameChoices.innerHTML=''; gameActionRow.innerHTML=''; gameReward.textContent='';
+
+    if(ev.awaitingJudge && ev.targetUser===userId){
+      var box=document.createElement('div'); box.className='gameJudgeBox'; box.textContent='對方猜的是：「'+(ev.submittedAnswer||'')+'」\n這是你真正的答案嗎？'; gameActionRow.appendChild(box);
+      var yes=document.createElement('button'); yes.type='button'; yes.className='gameAction'; yes.textContent='✅ 猜中'; yes.addEventListener('click',function(){submitGameAction('judge','correct')});
+      var no=document.createElement('button'); no.type='button'; no.className='gameAction'; no.textContent='❌ 沒猜中'; no.addEventListener('click',function(){submitGameAction('judge','wrong')});
+      gameActionRow.appendChild(yes);gameActionRow.appendChild(no);
+    }else if(ev.awaitingJudge){
+      var wait=document.createElement('div');wait.className='gameJudgeBox';wait.textContent='答案已送出，等 '+(ev.targetUser==='A'?'Frank':'Yun')+' 確認中……';gameActionRow.appendChild(wait);
+    }else if(ev.judging==='target-confirm' && userId!==ev.createdBy){
+      var waitGuess=document.createElement('div');waitGuess.className='gameJudgeBox';waitGuess.textContent='這題要讓 '+(ev.createdBy==='A'?'Frank':'Yun')+' 先猜；猜完會由另一方確認。';gameActionRow.appendChild(waitGuess);
+    }else if(ev.mode==='choice'&&Array.isArray(ev.choices)&&ev.choices.length){
+      ev.choices.slice(0,2).forEach(function(choice,idx){var b=document.createElement('button');b.type='button';b.className='gameChoice';b.textContent=choice;b.addEventListener('click',function(){submitGameAction('choice',idx)});gameChoices.appendChild(b);});
+    }else if(ev.mode==='fill'){
+      var input=document.createElement('input');input.type='text';input.className='gameTextAnswer';input.id='gameTextAnswer';input.placeholder='輸入你的答案……';input.maxLength=120;gameActionRow.appendChild(input);
+      var submit=document.createElement('button');submit.type='button';submit.className='gameAction';submit.textContent=ev.judging==='target-confirm'?'送出猜測':'送出答案';submit.addEventListener('click',function(){submitGameAction('fill',input.value.trim())});gameActionRow.appendChild(submit);
+    }else{
+      var b=document.createElement('button');b.type='button';b.className='gameAction';
+      if(ev.type==='topic')b.textContent='帶入這個話題';else if(ev.type==='dare')b.textContent='完成挑戰';else if(ev.type==='truth')b.textContent='我來回答';else b.textContent='摸摸麻糬';
+      b.addEventListener('click',function(){submitGameAction('complete',null)});gameActionRow.appendChild(b);
     }
-    var dismissed = Array.isArray(ev.dismissedBy) && ev.dismissedBy.indexOf(userId) >= 0;
-    if (ev.completedAt || dismissed) {
-      if (currentGameEventId === ev.id) hideGameEvent();
-      return;
-    }
-    var newEvent = currentGameEventId !== ev.id;
-    currentGameEventId = ev.id;
-    gameMascot.textContent = eventEmoji(ev.type);
-    if (newEvent && ev.type === 'cat') playPetMode('rub', '小雲跑來蹭你一下');
-    gameEyebrow.textContent = eventLabel(ev.type);
-    gameTitle.textContent = ev.title || '玩一個小遊戲';
-    gamePrompt.textContent = ev.prompt || '';
-    gameChoices.innerHTML = '';
-    gameActionRow.innerHTML = '';
-    gameReward.textContent = '';
-    var choices = Array.isArray(ev.choices) ? ev.choices : [];
-    if ((ev.type === 'guess' || ev.type === 'memory') && choices.length) {
-      choices.slice(0,2).forEach(function(choice, idx){
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'gameChoice'; b.textContent = choice;
-        b.addEventListener('click', function(){ submitGameAction('choice', idx); });
-        gameChoices.appendChild(b);
-      });
-    } else {
-      var b = document.createElement('button');
-      b.type='button'; b.className='gameAction';
-      if (ev.type === 'topic') b.textContent = '帶入這個話題';
-      else if (ev.type === 'dare') b.textContent = '完成挑戰';
-      else if (ev.type === 'truth') b.textContent = '我來回答';
-      else b.textContent = '摸摸小雲';
-      b.addEventListener('click', function(){ submitGameAction('complete', null); });
-      gameActionRow.appendChild(b);
-    }
-    if (gameOverlay.classList.contains('hidden')) gameOverlay.classList.remove('hidden');
+    if(gameOverlay.classList.contains('hidden'))gameOverlay.classList.remove('hidden');
   }
 
   async function checkAIEvent(boxId, replyId) {
@@ -1492,7 +1526,7 @@
         state.game = state.game || {};
         state.game.activeEvent = result.event;
         renderGameEvent();
-        setStatus('小雲幫你們開了一局。');
+        setStatus('麻糬幫你們開了一局。');
       } else {
         renderPet();
         setStatus(result.reason || 'AI 暫時沒有想到適合的玩法。');
@@ -1721,11 +1755,11 @@
     s.lastOpenedAt = s.lastOpenedAt || null;
     s.onlinePingAt = s.onlinePingAt || null;
     s.game = s.game && typeof s.game === 'object' ? s.game : {
-      xp: 0, level: 1, achievements: [], pet: { name: '小雲', xp: 0, level: 1, mood: '今天心情不錯' }, activeEvent: null, history: []
+      xp: 0, level: 1, achievements: [], pet: { name: '麻糬', xp: 0, level: 1, mood: '今天心情不錯' }, activeEvent: null, history: []
     };
     s.game.achievements = Array.isArray(s.game.achievements) ? s.game.achievements : [];
     s.game.history = Array.isArray(s.game.history) ? s.game.history : [];
-    s.game.pet = s.game.pet && typeof s.game.pet === 'object' ? s.game.pet : { name: '小雲', xp: 0, level: 1, mood: '今天心情不錯' };
+    s.game.pet = s.game.pet && typeof s.game.pet === 'object' ? s.game.pet : { name: '麻糬', xp: 0, level: 1, mood: '今天心情不錯' };
     return s;
   }
   function loadState() {
