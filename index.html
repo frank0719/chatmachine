@@ -597,23 +597,15 @@
   .headerActions{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
   .startGameBtn{appearance:none;border:1px solid rgba(240,166,192,.38);background:rgba(240,166,192,.08);color:var(--text-hi);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);font-family:inherit;font-weight:700;font-size:13px;padding:9px 15px;border-radius:999px;cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease}.startGameBtn:hover{transform:translateY(-1px);background:rgba(240,166,192,.13);border-color:rgba(240,166,192,.55)}.startGameBtn:disabled{opacity:.55;cursor:wait}
   .usageHint{max-width:36em;margin:0 auto;color:var(--text-lo);font-size:13px;line-height:1.65}
-  .petBar{position:relative;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:16px;margin:0 0 18px;padding:4px 0 0;overflow:visible;background:transparent;border:0;box-shadow:none}
-  .petIdentity{display:flex;align-items:flex-end;gap:12px;min-width:0}
-  .petStage{position:relative;width:180px;height:132px;flex:none;display:flex;align-items:flex-end;justify-content:center;cursor:pointer;overflow:visible}
-  .petGround{position:absolute;bottom:12px;left:50%;width:130px;height:22px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at center,rgba(76,224,255,.20),rgba(76,224,255,.02) 68%,transparent 72%);filter:blur(4px);animation:petGround 2.8s ease-in-out infinite;pointer-events:none}
-  .petSvg{width:170px;height:124px;position:relative;z-index:2;overflow:visible;filter:drop-shadow(0 12px 12px rgba(0,0,0,.28)) drop-shadow(0 0 15px rgba(76,224,255,.08));animation:petIdle 3s ease-in-out infinite;transform-origin:50% 80%}
-  .petCat{transform-box:fill-box;transform-origin:50% 82%}
-  .petHead{transform-box:fill-box;transform-origin:50% 74%}
-  .petTail{transform-box:fill-box;transform-origin:15% 82%;animation:petTail 2.5s ease-in-out infinite}
-  .petPawA{transform-box:fill-box;transform-origin:center;animation:petPaw 4s ease-in-out infinite}
-  .petBlink{transform-box:fill-box;transform-origin:center;animation:petBlink 5.1s infinite}
-  .petEarInner{fill:#efb3ca}.petEye{fill:#182033}.petEyeShine{fill:#fff}.petMuzzle{fill:#fff8fb;opacity:.94}.petNose{fill:#e88cae}.petWhisker{stroke:rgba(255,255,255,.78);stroke-width:1.25;stroke-linecap:round}.petFurStroke{stroke:#dbe9f6;stroke-width:1.2;stroke-linecap:round;opacity:.55}.teethGroup{opacity:0;transform-box:fill-box;transform-origin:center}.petStage.mode-grin .teethGroup{opacity:1}.petStage.mode-grin .petMouth{stroke-width:1.7}.petStage.mode-rub .petHead{animation:petHeadRub 1.25s ease-in-out}.petStage.mode-belly .petCat{animation:petBelly 1.15s cubic-bezier(.3,.8,.25,1)}.petStage.mode-flip .petCat{animation:petFlip 1.15s cubic-bezier(.25,.75,.2,1)}.petStage.mode-flip .petGround{animation:petGroundFlip 1.15s ease-out}.petStage.mode-grin .petCat{animation:petGrin .85s ease-in-out}
-  .petSpark{position:absolute;z-index:3;color:#c8fbff;font-size:11px;pointer-events:none;animation:petSpark 2.5s ease-in-out infinite}.petSpark.s1{top:6px;right:18px}.petSpark.s2{top:26px;left:16px;animation-delay:.9s}.petSpark.s3{bottom:34px;right:28px;animation-delay:1.5s}
-  .petInfo{min-width:0;padding-bottom:10px}.petIdentity strong{font-size:16px;font-weight:800}.petLevel{display:inline-flex;margin-left:7px;padding:2px 7px;border-radius:999px;font-size:10px;color:#c9f8ff;background:rgba(76,224,255,.08);border:1px solid rgba(76,224,255,.20)}.petMood{font-size:11.5px;color:var(--text-lo);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}.petHint{font-size:10px;color:rgba(247,247,251,.42);margin-top:5px}.petProgressWrap{min-width:180px;display:flex;align-items:center;gap:8px;padding-bottom:14px}.petProgress{height:8px;flex:1;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;border:1px solid rgba(255,255,255,.08)}.petProgress span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#8b7cff,#4ce0ff,#7fe0cf);background-size:200% 100%;animation:petXpFlow 2.8s linear infinite;transition:width .3s ease}.petXpText{font-size:10px;color:var(--text-lo);min-width:55px;text-align:right}
-  @keyframes petIdle{0%,100%{transform:translateY(0) scaleY(1)}50%{transform:translateY(-4px) scaleY(1.012)}}@keyframes petGround{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.52}50%{transform:translateX(-50%) scaleX(.86);opacity:.3}}@keyframes petTail{0%,100%{transform:rotate(0)}45%{transform:rotate(13deg)}72%{transform:rotate(-10deg)}
-  }@keyframes petPaw{0%,78%,100%{transform:rotate(0)}84%{transform:rotate(-9deg) translateY(-2px)}89%{transform:rotate(7deg) translateY(-1px)}94%{transform:rotate(0)}}@keyframes petBlink{0%,46%,48%,100%{transform:scaleY(1)}47%{transform:scaleY(.08)}}@keyframes petSpark{0%,100%{opacity:.15;transform:scale(.7) rotate(0)}45%{opacity:1;transform:scale(1) rotate(12deg)}65%{opacity:.35;transform:scale(.8) rotate(28deg)}}@keyframes petHeadRub{0%,100%{transform:translateX(0) rotate(0)}24%{transform:translateX(-11px) rotate(-5deg)}52%{transform:translateX(8px) rotate(4deg)}78%{transform:translateX(-5px) rotate(-2deg)}}@keyframes petBelly{0%{transform:translateY(0) rotate(0)}35%{transform:translateY(14px) rotate(42deg)}72%{transform:translateY(20px) rotate(78deg)}100%{transform:translateY(0) rotate(0)}}@keyframes petFlip{0%{transform:translateY(0) rotate(0) scale(1)}24%{transform:translateY(-16px) rotate(90deg) scale(1.02)}50%{transform:translateY(-42px) rotate(180deg) scale(1.02)}76%{transform:translateY(-16px) rotate(270deg) scale(1.02)}100%{transform:translateY(0) rotate(360deg) scale(1)}}@keyframes petGroundFlip{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.5}50%{transform:translateX(-50%) scaleX(.55);opacity:.18}}@keyframes petGrin{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-4px) scale(1.025)}70%{transform:translateY(0) scale(1)}}@keyframes petXpFlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
-  @media (prefers-reduced-motion:reduce){.petSvg,.petGround,.petPawA,.petTail,.petBlink,.petSpark,.petProgress span{animation:none!important}.petStage.mode-rub .petHead,.petStage.mode-belly .petCat,.petStage.mode-flip .petCat,.petStage.mode-flip .petGround,.petStage.mode-grin .petCat{animation:none!important}}
-  @media (max-width:620px){.petBar{grid-template-columns:1fr}.petProgressWrap{width:100%;padding-bottom:0}.petStage{width:165px;height:128px}.petSvg{width:158px;height:116px}.petIdentity{align-items:flex-end}}
+  .petBar{position:relative;display:flex;align-items:center;justify-content:space-between;gap:18px;margin:4px 0 18px;padding:10px 14px;background:linear-gradient(90deg,rgba(255,255,255,.07),rgba(76,224,255,.05));border:1px solid rgba(255,255,255,.16);border-radius:18px;box-shadow:0 12px 28px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+  .petHud{display:flex;align-items:center;gap:9px;min-width:0}.petHudFace{font-size:20px;filter:drop-shadow(0 3px 8px rgba(255,255,255,.15))}.petHudName{font-size:13px;font-weight:800}.petLevel{display:inline-flex;margin-left:6px;padding:2px 7px;border-radius:999px;font-size:10px;color:#d2fbff;background:rgba(76,224,255,.08);border:1px solid rgba(76,224,255,.2)}.petMood{font-size:10.5px;color:var(--text-lo);margin-left:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}.petHint{display:block;font-size:9.5px;color:rgba(247,247,251,.38);margin-top:2px}.petProgressWrap{min-width:190px;display:flex;align-items:center;gap:8px}.petProgress{height:7px;flex:1;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid rgba(255,255,255,.08)}.petProgress span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#8b7cff,#4ce0ff,#7fe0cf);background-size:200% 100%;animation:petXpFlow 2.6s linear infinite;transition:width .35s ease}.petXpText{font-size:9.5px;color:var(--text-lo);min-width:54px;text-align:right}
+  .petWanderLayer{position:fixed;inset:0;z-index:24;pointer-events:none;overflow:hidden}.petActor{position:fixed;left:50%;top:72%;width:194px;height:140px;pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;will-change:left,top;filter:drop-shadow(0 10px 16px rgba(0,0,0,.3));transform:translateY(-70%)}.petActor:active{cursor:grabbing}.petActor.hidden{display:none}.petShadow{position:absolute;left:50%;bottom:6px;width:122px;height:22px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse at center,rgba(76,224,255,.18),rgba(76,224,255,.03) 68%,transparent 72%);filter:blur(5px);pointer-events:none}.petSvg{position:absolute;left:0;bottom:14px;width:194px;height:138px;overflow:visible}.petBody{transform-box:fill-box;transform-origin:50% 75%}.petHead{transform-box:fill-box;transform-origin:52% 72%}.petTail{transform-box:fill-box;transform-origin:14% 84%;animation:petTailIdle 2.4s ease-in-out infinite}.petLeg{transform-box:fill-box;transform-origin:50% 15%}.petLegRearA{animation:petWalkA .42s ease-in-out infinite}.petLegFrontA{animation:petWalkB .42s ease-in-out infinite}.petLegRearB{animation:petWalkB .42s ease-in-out infinite}.petLegFrontB{animation:petWalkA .42s ease-in-out infinite}.petActor.is-walking .petLegRearA,.petActor.is-running .petLegRearA{animation:petWalkA .32s ease-in-out infinite}.petActor.is-walking .petLegFrontA,.petActor.is-running .petLegFrontA{animation:petWalkB .32s ease-in-out infinite}.petActor.is-walking .petLegRearB,.petActor.is-running .petLegRearB{animation:petWalkB .32s ease-in-out infinite}.petActor.is-walking .petLegFrontB,.petActor.is-running .petLegFrontB{animation:petWalkA .32s ease-in-out infinite}.petActor:not(.is-walking):not(.is-running) .petLeg{animation:none}.petActor.is-rub .petHead{animation:petHeadRub 1.3s ease-in-out}.petActor.is-belly .petBody{animation:petBelly 1.2s cubic-bezier(.28,.8,.22,1)}.petActor.is-grin .petBody{animation:petGrin .82s ease-in-out}.petActor.is-flip .petBody{animation:petBackflip 1.2s cubic-bezier(.25,.72,.18,1)}.petActor.is-flip .petShadow{animation:petShadowFlip 1.2s ease-out}.petActor.is-rub .petTail{animation-duration:1s}.teethGroup{opacity:0;transition:opacity .12s}.petActor.is-grin .teethGroup{opacity:1}.petEarInner{fill:#efb3ca}.petEye{fill:#687b36}.petEyeShine{fill:#fff}.petMuzzle{fill:#fbfbfd}.petNose{fill:#e58ca8}.petWhisker{stroke:rgba(255,255,255,.78);stroke-width:1.35;stroke-linecap:round}.petFurStroke{stroke:#f7fbff;stroke-width:1.2;stroke-linecap:round;opacity:.46}.petStripe{stroke:#4f5a66;stroke-width:4;stroke-linecap:round;opacity:.48}.petTuft{fill:#eef4f8;opacity:.9} .petCanvas{image-rendering:pixelated;image-rendering:crisp-edges;overflow:visible;transform-origin:center 72%;filter:drop-shadow(0 3px 2px rgba(0,0,0,.12))}.petActor[data-dir="1"] .petCanvas{transform:scaleX(1)}.petActor[data-dir="-1"] .petCanvas{transform:scaleX(-1)}.petActor.is-rub .petCanvas{animation:pixelRub .65s ease-in-out 2}.petActor.is-belly .petCanvas{animation:pixelBelly 1.25s cubic-bezier(.2,.8,.2,1)}.petActor.is-grin .petCanvas{animation:pixelGrin .6s ease-in-out}.petActor.is-flip .petCanvas{animation:pixelFlip 1.1s cubic-bezier(.2,.7,.15,1)}.petActor.is-running .petCanvas{animation:pixelRun .22s steps(2,end) infinite}.petActor.is-walking .petCanvas{animation:pixelWalk .42s steps(2,end) infinite}
+  @keyframes pixelRub{0%,100%{transform:translateX(0) rotate(0)}35%{transform:translateX(-7px) rotate(-7deg)}70%{transform:translateX(5px) rotate(5deg)}}@keyframes pixelBelly{0%,100%{transform:rotate(0) translateY(0)}45%,70%{transform:rotate(90deg) translateY(5px)}}@keyframes pixelGrin{0%,100%{transform:scale(1)}45%{transform:scale(1.12) translateY(-4px)}}@keyframes pixelFlip{0%{transform:rotate(0) translateY(0)}30%{transform:rotate(130deg) translateY(-28px)}65%{transform:rotate(260deg) translateY(-24px)}100%{transform:rotate(360deg) translateY(0)}}@keyframes pixelWalk{0%,100%{translate:0 0}50%{translate:0 -3px}}@keyframes pixelRun{0%,100%{translate:0 0}50%{translate:0 -6px}}
+  .petBubble{position:fixed;z-index:2;min-width:110px;max-width:180px;padding:8px 11px;border:1px solid rgba(255,255,255,.22);border-radius:13px;background:rgba(14,18,28,.83);box-shadow:0 10px 28px rgba(0,0,0,.28),0 0 18px rgba(76,224,255,.08);color:var(--text-hi);font-size:11px;line-height:1.45;opacity:0;transform:translate(-50%,4px) scale(.96);transition:opacity .18s ease,transform .18s ease;pointer-events:none;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}.petBubble.show{opacity:1;transform:translate(-50%,0) scale(1)}
+  .petDust{position:fixed;z-index:1;width:5px;height:5px;border-radius:50%;background:rgba(201,248,255,.7);box-shadow:0 0 8px rgba(76,224,255,.45);pointer-events:none;animation:petDustFly .6s ease-out forwards}
+  @keyframes petWalkA{0%,100%{transform:rotate(13deg) translateY(0)}50%{transform:rotate(-13deg) translateY(-4px)}}@keyframes petWalkB{0%,100%{transform:rotate(-13deg) translateY(-4px)}50%{transform:rotate(13deg) translateY(0)}}@keyframes petTailIdle{0%,100%{transform:rotate(0deg)}45%{transform:rotate(9deg)}72%{transform:rotate(-8deg)}}@keyframes petHeadRub{0%,100%{transform:translateX(0) rotate(0)}24%{transform:translateX(-11px) rotate(-4deg)}52%{transform:translateX(9px) rotate(4deg)}78%{transform:translateX(-6px) rotate(-2deg)}}@keyframes petBelly{0%{transform:translateY(0) rotate(0)}35%{transform:translateY(18px) rotate(42deg)}72%{transform:translateY(20px) rotate(82deg)}100%{transform:translateY(0) rotate(0)}}@keyframes petBackflip{0%{transform:translateY(0) rotate(0) scale(1)}23%{transform:translateY(-20px) rotate(90deg) scale(1.01)}50%{transform:translateY(-52px) rotate(180deg) scale(1.03)}76%{transform:translateY(-20px) rotate(270deg) scale(1.01)}100%{transform:translateY(0) rotate(360deg) scale(1)}}@keyframes petShadowFlip{0%,100%{transform:translateX(-50%) scaleX(1);opacity:.48}50%{transform:translateX(-50%) scaleX(.52);opacity:.16}}@keyframes petGrin{0%,100%{transform:translateY(0) scale(1)}45%{transform:translateY(-3px) scale(1.03)}70%{transform:translateY(0) scale(1)}}@keyframes petXpFlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}@keyframes petDustFly{from{opacity:.75;transform:translate(0,0) scale(1)}to{opacity:0;transform:translate(-8px,18px) scale(.2)}}
+  @media (prefers-reduced-motion:reduce){.petActor,.petSvg,.petCanvas,.petTail,.petLeg,.petProgress span{animation:none!important}.petActor.is-rub .petHead,.petActor.is-belly .petBody,.petActor.is-grin .petBody,.petActor.is-flip .petBody,.petActor.is-flip .petShadow{animation:none!important}}
+  @media (max-width:620px){.petBar{align-items:flex-start;flex-direction:column;gap:9px}.petProgressWrap{width:100%;min-width:0}.petActor{width:164px;height:122px;top:74%}.petSvg{width:164px;height:118px}.petShadow{width:105px}.petMood{max-width:160px}.petHint{display:none}.petBubble{max-width:150px;font-size:10.5px}}
   .gameOverlay{position:fixed;inset:0;z-index:40;background:rgba(2,4,12,.55);display:flex;align-items:flex-end;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}.gameOverlay.hidden{display:none}.gameCard{position:relative;width:min(520px,100%);padding:20px 18px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.26);background:linear-gradient(145deg,rgba(24,27,49,.97),rgba(8,29,34,.97));box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 35px rgba(76,224,255,.12);animation:gameIn .22s ease-out}.gameOverlay.hidden .gameCard{animation:none}@keyframes gameIn{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}.gameClose{position:absolute;top:11px;right:11px;width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text-lo);cursor:pointer}.gameMascot{text-align:center;font-size:34px;margin:2px 0 6px}.gameEyebrow{text-align:center;font-size:11px;color:var(--accent-cyan);font-weight:700;letter-spacing:.04em}.gameTitle{text-align:center;font-size:20px;font-weight:800;margin:6px 32px 8px}.gamePrompt{text-align:center;color:var(--text-lo);line-height:1.7;font-size:14px;margin:0 auto 14px;max-width:34em}.gameChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gameChoice,.gameAction{appearance:none;width:100%;min-height:46px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.07);color:var(--text-hi);font:inherit;font-weight:650;cursor:pointer}.gameChoice:hover,.gameAction:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}.gameActionRow:empty{display:none}.gameActionRow{display:flex;gap:9px;margin-top:9px}.gameActionRow .gameAction{flex:1}.gameReward{min-height:20px;margin-top:10px;text-align:center;font-size:12px;color:#c9f8ff}.gameSkip{display:block;margin:10px auto 0;border:0;background:transparent;color:var(--text-lo);font:inherit;font-size:11px;cursor:pointer}.gameSkip:hover{color:var(--text-hi)}
   @media (max-width:420px){.petBar{align-items:flex-start;flex-direction:column}.petProgressWrap{width:100%;}.gameChoices{grid-template-columns:1fr}}
 </style>
@@ -638,49 +630,17 @@
   <section id="boxGrid" class="grid"></section>
 
   <section id="petBar" class="petBar" style="display:none;">
-    <div class="petIdentity">
-      <div class="petStage" id="petStage" title="點小雲看看牠會做什麼">
-        <div class="petGround"></div>
-        <span class="petSpark s1">✦</span><span class="petSpark s2">·</span><span class="petSpark s3">✦</span>
-        <svg class="petSvg" viewBox="0 0 220 164" role="img" aria-label="小雲，挪威森林貓電子寵物">
-          <defs>
-            <linearGradient id="furMain" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f2f4f8"/><stop offset="55%" stop-color="#b5beca"/><stop offset="100%" stop-color="#73808d"/></linearGradient>
-            <linearGradient id="furShadow" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#dfe7ef"/><stop offset="100%" stop-color="#909ca8"/></linearGradient>
-            <radialGradient id="bellyFur"><stop offset="0%" stop-color="#fffdfd"/><stop offset="100%" stop-color="#d8dee7"/></radialGradient>
-            <filter id="softGlow"><feGaussianBlur stdDeviation="3"/></filter>
-          </defs>
-          <g class="petCat">
-            <g class="petTail">
-              <path d="M174 108 C205 104, 214 77, 200 57 C191 44, 178 53, 189 65 C198 76, 196 88, 179 91" fill="none" stroke="#8b97a3" stroke-width="22" stroke-linecap="round"/>
-              <path d="M174 108 C205 104,214 77,200 57" fill="none" stroke="#e9eef4" stroke-width="7" stroke-linecap="round" opacity=".65"/>
-            </g>
-            <ellipse cx="110" cy="118" rx="64" ry="33" fill="url(#furMain)"/>
-            <ellipse cx="111" cy="124" rx="47" ry="23" fill="url(#bellyFur)" opacity=".88"/>
-            <path d="M69 112 C59 123,56 145,71 148 C78 150,85 146,87 137" fill="url(#furShadow)"/>
-            <path d="M145 112 C155 123,161 142,148 148 C140 151,133 145,132 137" fill="url(#furShadow)"/>
-            <g class="petPawA"><ellipse cx="72" cy="141" rx="13" ry="8" fill="#e5ebf2"/><ellipse cx="148" cy="141" rx="13" ry="8" fill="#d6dde7"/></g>
-            <path class="petFurStroke" d="M72 107 L62 99 M82 100 L72 90 M95 96 L89 84 M125 95 L131 84 M140 101 L151 91 M151 109 L163 101"/>
-            <g class="petHead">
-              <path d="M66 76 C62 54,68 29,91 22 L80 5 Q77 0 84 4 L112 19 L139 4 Q146 0 143 7 L136 23 C158 30,166 53,162 77 C159 101,139 115,114 115 C89 115,69 99,66 76Z" fill="url(#furMain)"/>
-              <path d="M80 27 L84 11 L106 23" class="petEarInner"/>
-              <path d="M121 23 L141 10 L137 28" class="petEarInner"/>
-              <path d="M74 66 C76 38,95 28,114 28 C134 28,154 40,156 66 C158 89,141 106,114 107 C87 106,72 89,74 66Z" fill="#eef3f8" opacity=".86"/>
-              <path d="M78 55 Q87 40 98 34 M150 58 Q143 40 132 34" fill="none" stroke="#6e7985" stroke-width="5" stroke-linecap="round" opacity=".32"/>
-              <g class="petBlink"><ellipse class="petEye" cx="94" cy="64" rx="7" ry="9"/><ellipse class="petEye" cx="134" cy="64" rx="7" ry="9"/><circle class="petEyeShine" cx="96" cy="61" r="2.4"/><circle class="petEyeShine" cx="136" cy="61" r="2.4"/></g>
-              <ellipse class="petMuzzle" cx="114" cy="80" rx="22" ry="15"/>
-              <path class="petNose" d="M107 78 Q114 72 121 78 Q118 85 114 87 Q110 85 107 78Z"/>
-              <path class="petMouth" d="M114 86 Q108 93 102 90 M114 86 Q120 93 126 90" fill="none" stroke="#8d4c63" stroke-width="1.8" stroke-linecap="round"/>
-              <g class="teethGroup"><path d="M101 89 Q114 105 127 89 Q124 103 114 106 Q104 103 101 89Z" fill="#fff" stroke="#b5bdc7" stroke-width="1"/><path d="M107 92 L109 100 M114 94 L114 102 M121 92 L119 100" stroke="#c5ccd4" stroke-width="1"/></g>
-              <path class="petWhisker" d="M93 81 L60 73 M93 87 L56 88 M135 81 L168 73 M135 87 L172 88"/>
-              <path d="M81 20 L91 9 M146 20 L136 9" stroke="#f7faff" stroke-width="3" stroke-linecap="round" opacity=".65"/>
-            </g>
-          </g>
-        </svg>
-      </div>
-      <div class="petInfo"><strong id="petName">小雲</strong><span class="petLevel">Lv.<span id="petLevel">1</span></span><div id="petMood" class="petMood">今天心情不錯</div><div class="petHint">挪威森林貓 · 點牠會隨機撒嬌</div></div>
-    </div>
+    <div class="petHud"><span class="petHudFace">🐾</span><div><span class="petHudName" id="petName">小雲</span><span class="petLevel">Lv.<span id="petLevel">1</span></span><span id="petMood" class="petMood">今天心情不錯</span><span class="petHint">像素貓咪 · 點牠、拖牠、滑牠都會有反應</span></div></div>
     <div class="petProgressWrap"><div class="petProgress"><span id="petXpFill"></span></div><div id="petXpText" class="petXpText">0 / 100</div></div>
   </section>
+
+  <div id="petWanderLayer" class="petWanderLayer" aria-hidden="true">
+    <div id="petActor" class="petActor" role="button" tabindex="0" aria-label="小雲，會自己到處跑的像素貓咪" data-dir="1">
+      <div class="petShadow"></div>
+      <canvas id="petCanvas" class="petSvg petCanvas" width="80" height="56" role="img" aria-label="小雲，橘白像素貓咪"></canvas>
+    </div>
+    <div id="petBubble" class="petBubble"></div>
+  </div>
 
   <form id="addForm">
     <div class="moods">
@@ -1121,6 +1081,74 @@
     return result.file_id;
   }
 
+  var petBar = document.getElementById('petBar');
+  var petNameEl = document.getElementById('petName');
+  var petLevelEl = document.getElementById('petLevel');
+  var petMoodEl = document.getElementById('petMood');
+  var petXpFill = document.getElementById('petXpFill');
+  var petXpText = document.getElementById('petXpText');
+  var petActor = document.getElementById('petActor');
+  var petSvg = document.getElementById('petCanvas');
+  var petCtx = petSvg ? petSvg.getContext('2d') : null;
+  var petBubble = document.getElementById('petBubble');
+  var petModeTimer = null;
+  var petBubbleTimer = null;
+  var petState = { x: 0, y: 0, vx: 42, targetX: 0, walking: true, dragging: false, lastT: 0, lastPointerX: 0, lastPointerY: 0, pointerStartX: 0, pointerStartY: 0, pointerStartT: 0, lastSwipeDir: 0, swipeCount: 0, initialized:false, roamTimer:null, trickTimer:null };
+  var petModes = ['rub','belly','grin','flip'];
+
+  // Original low-resolution pixel cat renderer. Drawn once per animation frame; no external art dependency.
+  function drawPetCanvas(now){
+    if(!petCtx || !petSvg) return;
+    var c=petCtx, t=(now||performance.now())/1000, walk=Math.abs(petState.vx)>20 && !petState.dragging;
+    c.clearRect(0,0,80,56); c.imageSmoothingEnabled=false;
+    var mode=['rub','belly','grin','flip'].find(function(m){return petActor.classList.contains('is-'+m)});
+    var run=petActor.classList.contains('is-running');
+    var bob=walk ? (Math.sin(t*(run?22:12))>0?1:-1) : Math.sin(t*2.2)*.5;
+    var leg=Math.floor(t*(run?16:8))%2;
+    function px(x,y,w,h,col){c.fillStyle=col;c.fillRect(Math.round(x),Math.round(y),w,h)}
+    function ellipse(x,y,rx,ry,col){c.fillStyle=col;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill()}
+    function poly(points,col){c.fillStyle=col;c.beginPath();c.moveTo(points[0][0],points[0][1]);points.slice(1).forEach(function(q){c.lineTo(q[0],q[1])});c.closePath();c.fill()}
+    var orange='#d97935', gold='#f2a653', light='#ffd08a', cream='#fff0d9', shade='#b85b2e', dark='#603b31', pink='#e9919e', eye='#77b85b', white='#fffdf5';
+    c.save();
+    if(mode==='belly'){c.translate(40,30);c.rotate(.18);c.translate(-40,-30)}
+    // fluffy tail, with alternating pixels
+    var wag=Math.round(Math.sin(t*3.1)*2);
+    px(53,24+bob,7,5,orange);px(58,19+bob+wag,5,7,gold);px(61,14+bob+wag,5,7,orange);px(63,10+bob+wag,5,6,gold);px(65,8+bob+wag,4,4,cream);
+    // rear/front legs, offset phases create a walk/run cycle
+    var l1=walk?(leg?2:0):0, l2=walk?(leg?0:2):0;
+    px(24+(walk&&leg?2:0),35+bob,7,12-l1,shade);px(25+(walk&&leg?2:0),43+bob-l1,7,4,cream);
+    px(34+(walk&&!leg?2:0),36+bob,7,11-l2,orange);px(35+(walk&&!leg?2:0),43+bob-l2,7,4,cream);
+    px(48+(walk&&!leg?2:0),34+bob,7,12-l2,orange);px(49+(walk&&!leg?2:0),43+bob-l2,7,4,cream);
+    px(55+(walk&&leg?2:0),34+bob,6,12-l1,shade);px(55+(walk&&leg?2:0),43+bob-l1,7,4,cream);
+    // torso and soft cream belly
+    ellipse(42,31+bob,20,12,gold); ellipse(42,30+bob,17,9,orange);
+    ellipse(42,35+bob,13,6,cream); px(31,27+bob,4,5,light);px(40,25+bob,5,3,light);px(48,28+bob,5,4,shade);
+    // head + cheek fluff
+    ellipse(23,25+bob,15,14,gold);ellipse(22,23+bob,13,12,light);
+    // ears with pink inset
+    poly([[10,18+bob],[10,5+bob],[20,12+bob],[22,19+bob]],orange);poly([[25,18+bob],[31,5+bob],[34,19+bob]],gold);
+    poly([[13,15+bob],[13,9+bob],[18,14+bob]],pink);poly([[28,15+bob],[31,9+bob],[31,16+bob]],pink);
+    // tabby cap and cheek markings
+    px(17,11+bob,3,5,shade);px(22,10+bob,3,5,shade);px(27,12+bob,3,4,shade);
+    px(11,22+bob,4,5,orange);px(12,29+bob,5,3,orange);px(29,23+bob,4,4,orange);
+    // face mask, eyes and shine (blink every ~5s)
+    ellipse(23,27+bob,10,8,cream);ellipse(17,24+bob,4,5,white);ellipse(28,24+bob,4,5,white);
+    var blink=(t%5.4)>5.18;
+    if(!blink){ellipse(18,24+bob,2.3,3.5,eye);ellipse(28,24+bob,2.3,3.5,eye);px(18,22+bob,1,3,dark);px(28,22+bob,1,3,dark);px(17,22+bob,1,1,white);px(27,22+bob,1,1,white)}else{px(15,24+bob,5,1,dark);px(26,24+bob,5,1,dark)}
+    // nose, muzzle, smile; grin adds tiny pixel teeth
+    ellipse(23,29+bob,2,1.5,pink);px(22,30+bob,1,2,dark);px(23,31+bob,3,1,dark);px(20,31+bob,2,1,dark);px(26,31+bob,2,1,dark);
+    if(mode==='grin'){px(20,32+bob,7,3,white);px(22,32+bob,1,2,pink);px(25,32+bob,1,2,pink)}
+    // whisker pixels and cheek blush
+    px(8,28+bob,5,1,shade);px(8,31+bob,4,1,shade);px(32,28+bob,5,1,shade);px(33,31+bob,4,1,shade);
+    px(14,29+bob,3,2,'#f5a0a2');px(29,29+bob,3,2,'#f5a0a2');
+    // tiny chest bib + collar charm
+    px(34,29+bob,5,6,cream);px(36,32+bob,2,2,'#7edbd2');
+    // small floating heart/sparkle accents during affection tricks
+    if(mode==='rub' && Math.sin(t*13)>-.15){px(4,12,2,2,'#ff91b7');px(6,10,2,2,'#ff91b7');px(8,12,2,2,'#ff91b7');px(6,14,2,2,'#ff91b7')}
+    if(mode==='flip'){px(67,4,2,2,'#ffe28a');px(70,7,2,2,'#fff3c4')}
+    c.restore();
+  }
+
   function renderPet() {
     var game = state.game || {};
     var pet = game.pet || {};
@@ -1133,36 +1161,188 @@
     petXpFill.style.width = Math.min(100, intoLevel) + '%';
     petXpText.textContent = intoLevel + ' / 100';
     petBar.style.display = 'flex';
+    initPetRoaming();
   }
 
-  var petStage = document.getElementById('petStage');
-  var petModes = ['rub','belly','grin','flip'];
+  function petBounds() {
+    var w = Math.max(140, petActor ? petActor.offsetWidth : 180);
+    var h = Math.max(110, petActor ? petActor.offsetHeight : 125);
+    var minX = 8;
+    var maxX = Math.max(minX, window.innerWidth - w - 8);
+    var topMin = Math.max(90, Math.floor(window.innerHeight * 0.34));
+    var topMax = Math.max(topMin, Math.floor(window.innerHeight * 0.82));
+    return {w:w,h:h,minX:minX,maxX:maxX,minY:topMin,maxY:topMax};
+  }
+  function placePet(x,y) {
+    var b = petBounds();
+    petState.x = Math.max(b.minX, Math.min(b.maxX, x));
+    petState.y = Math.max(b.minY, Math.min(b.maxY, y));
+    petActor.style.left = petState.x + 'px';
+    petActor.style.top = petState.y + 'px';
+    petActor.style.transform = 'translate(-50%,-70%)';
+    if (petBubble) {
+      petBubble.style.left = (petState.x + b.w/2) + 'px';
+      petBubble.style.top = Math.max(60, petState.y - 24) + 'px';
+    }
+  }
+  function updatePetDirection() {
+    var dir = petState.vx >= 0 ? 1 : -1;
+    petActor.dataset.dir = String(dir);
+  }
+  function petDust() {
+    if (!petActor) return;
+    var d = document.createElement('span');
+    d.className = 'petDust';
+    d.style.left = (petState.x + (petState.vx >= 0 ? 20 : 135)) + 'px';
+    d.style.top = (petState.y + 88 + Math.random()*10) + 'px';
+    d.style.animationDelay = (Math.random()*0.08) + 's';
+    document.body.appendChild(d);
+    window.setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); }, 720);
+  }
+  function showPetBubble(text, ms) {
+    if (!petBubble) return;
+    petBubble.textContent = text || '';
+    petBubble.classList.add('show');
+    if (petBubbleTimer) clearTimeout(petBubbleTimer);
+    petBubbleTimer = setTimeout(function(){ petBubble.classList.remove('show'); }, ms || 1800);
+  }
   function playPetMode(mode, mood){
-    if (!petStage) return;
-    petStage.classList.remove('mode-rub','mode-belly','mode-grin','mode-flip');
-    void petStage.offsetWidth;
-    petStage.classList.add('mode-' + mode);
-    if (mood) petMoodEl.textContent = mood;
-    window.setTimeout(function(){
-      petStage.classList.remove('mode-rub','mode-belly','mode-grin','mode-flip');
+    if (!petActor || petState.dragging) return;
+    petActor.classList.remove('is-rub','is-belly','is-grin','is-flip');
+    void petActor.offsetWidth;
+    petActor.classList.add('is-' + mode);
+    if (mood) { petMoodEl.textContent = mood; showPetBubble(mood, mode === 'flip' ? 2100 : 1700); }
+    if (petModeTimer) clearTimeout(petModeTimer);
+    petModeTimer = setTimeout(function(){
+      petActor.classList.remove('is-rub','is-belly','is-grin','is-flip');
       var pet = (state.game && state.game.pet) || {};
       petMoodEl.textContent = pet.mood || '今天心情不錯';
-    }, mode === 'flip' ? 1250 : 1450);
+    }, mode === 'flip' ? 1250 : 1500);
   }
-  if (petStage) {
-    petStage.addEventListener('click', function(){
-      var mode = petModes[Math.floor(Math.random() * petModes.length)];
-      var moods = {rub:'蹭過來了，還不放手喔',belly:'突然翻肚……可以摸一下',grin:'嘿嘿，露牙給你看',flip:'小雲：看我的！後空翻！'};
-      playPetMode(mode, moods[mode]);
-    });
-    window.setInterval(function(){
-      if (!gameOverlay.classList.contains('hidden')) return;
-      if (Math.random() < 0.72) {
-        var mode = petModes[Math.floor(Math.random() * petModes.length)];
-        var moods = {rub:'自己跑來蹭一下',belly:'小雲翻肚睡著了',grin:'小雲露牙偷笑',flip:'小雲突然來個後空翻'};
-        playPetMode(mode, moods[mode]);
+  function triggerZoomies(){
+    if (!petActor || petState.dragging) return;
+    var b = petBounds();
+    petState.swipeCount = 0;
+    petState.vx = Math.random() > .5 ? 560 : -560;
+    petState.walking = true;
+    petActor.classList.add('is-running');
+    showPetBubble('小雲開始暴走了！', 1500);
+    var loops = 0;
+    var runTimer = setInterval(function(){
+      loops++;
+      petState.vx *= -1;
+      if (loops >= 5) {
+        clearInterval(runTimer);
+        petActor.classList.remove('is-running');
+        petState.vx = petState.vx >= 0 ? 52 : -52;
+        choosePetTarget();
       }
-    }, 21000);
+    }, 520);
+  }
+  function choosePetTarget(){
+    if (!petActor || petState.dragging) return;
+    var b = petBounds();
+    petState.targetX = b.minX + Math.random() * Math.max(1, b.maxX - b.minX);
+    petState.vx = petState.targetX >= petState.x ? (42 + Math.random()*32) : -(42 + Math.random()*32);
+    petState.walking = true;
+    updatePetDirection();
+    var dy = b.minY + Math.random() * Math.max(1, b.maxY-b.minY);
+    petState.y += (dy - petState.y) * .16;
+  }
+  function petTick(t){
+    if (!petActor || !petState.initialized) return;
+    var dt = Math.min(.05, ((t - (petState.lastT || t))/1000));
+    petState.lastT = t;
+    var blocked = petState.dragging || !gameOverlay.classList.contains('hidden') || document.hidden;
+    drawPetCanvas(t);
+    if (!blocked) {
+      var dx = petState.targetX - petState.x;
+      if (Math.abs(dx) < 12) choosePetTarget();
+      petState.x += petState.vx * dt;
+      var b = petBounds();
+      if (petState.x <= b.minX) { petState.x = b.minX; petState.vx = Math.abs(petState.vx); updatePetDirection(); choosePetTarget(); }
+      if (petState.x >= b.maxX) { petState.x = b.maxX; petState.vx = -Math.abs(petState.vx); updatePetDirection(); choosePetTarget(); }
+      if (Math.random() < dt * 2.4 && Math.abs(petState.vx) > 80) petDust();
+      petActor.classList.toggle('is-walking', Math.abs(petState.vx) > 20);
+      placePet(petState.x, petState.y);
+    }
+    requestAnimationFrame(petTick);
+  }
+  function initPetRoaming(){
+    if (!petActor || petState.initialized) return;
+    petState.initialized = true;
+    var b = petBounds();
+    placePet(b.minX + (b.maxX-b.minX)*.68, Math.max(b.minY, b.maxY - 30));
+    choosePetTarget();
+    updatePetDirection();
+    petActor.addEventListener('pointerdown', function(e){
+      e.preventDefault();
+      petState.dragging = true;
+      petState.pointerStartX = e.clientX;
+      petState.pointerStartY = e.clientY;
+      petState.pointerStartT = performance.now();
+      petState.lastPointerX = e.clientX;
+      petState.lastPointerY = e.clientY;
+      petState.lastSwipeDir = 0;
+      petActor.setPointerCapture(e.pointerId);
+      petActor.classList.remove('is-walking','is-running');
+      if (petBubble) petBubble.classList.remove('show');
+    });
+    petActor.addEventListener('pointermove', function(e){
+      if (!petState.dragging) return;
+      e.preventDefault();
+      var dx = e.clientX - petState.lastPointerX;
+      var dy = e.clientY - petState.lastPointerY;
+      var dt = Math.max(16, performance.now() - petState.pointerStartT);
+      var dir = Math.sign(dx);
+      if (Math.abs(dx) > 8 && dir !== 0) {
+        if (petState.lastSwipeDir && dir !== petState.lastSwipeDir) petState.swipeCount++;
+        petState.lastSwipeDir = dir;
+      }
+      petState.lastPointerX = e.clientX;
+      petState.lastPointerY = e.clientY;
+      var b = petBounds();
+      placePet(petState.x + dx, petState.y + dy*.72);
+      petState.vx = dx / Math.max(.03, dt/1000) * .35;
+      petState.vx = Math.max(-520, Math.min(520, petState.vx));
+      updatePetDirection();
+    });
+    petActor.addEventListener('pointerup', function(e){
+      if (!petState.dragging) return;
+      e.preventDefault();
+      petState.dragging = false;
+      var dx = e.clientX - petState.pointerStartX;
+      var elapsed = Math.max(40, performance.now() - petState.pointerStartT);
+      if (Math.abs(dx) < 10 && elapsed < 500) {
+        var mode = petModes[Math.floor(Math.random()*petModes.length)];
+        var moods = {rub:'跑來蹭你一下',belly:'突然翻肚了……',grin:'欸！露牙給你看',flip:'看我的後空翻！'};
+        playPetMode(mode, moods[mode]);
+      } else {
+        var swipeSpeed = Math.max(-700, Math.min(700, dx / (elapsed/1000)));
+        petState.vx = swipeSpeed || (dx >= 0 ? 180 : -180);
+        if (petState.swipeCount >= 2) triggerZoomies();
+        else choosePetTarget();
+      }
+      try{ petActor.releasePointerCapture(e.pointerId); }catch(_){ }
+    });
+    petActor.addEventListener('pointercancel', function(){ petState.dragging=false; choosePetTarget(); });
+    petActor.addEventListener('keydown', function(e){
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); var mode=petModes[Math.floor(Math.random()*petModes.length)]; var moods={rub:'來蹭一下',belly:'翻肚給你看',grin:'嘿嘿',flip:'後空翻！'}; playPetMode(mode,moods[mode]); }
+    });
+    petState.roamTimer = setInterval(function(){
+      if (petState.dragging || !gameOverlay.classList.contains('hidden')) return;
+      if (Math.random() < .75) choosePetTarget();
+      else if (Math.random() < .5) playPetMode('rub','小雲自己跑來蹭一下');
+    }, 3800);
+    petState.trickTimer = setInterval(function(){
+      if (petState.dragging || !gameOverlay.classList.contains('hidden')) return;
+      var r = Math.random();
+      if (r < .28) playPetMode('rub','小雲突然跑來蹭你');
+      else if (r < .48) playPetMode('belly','小雲翻肚躺一下');
+      else if (r < .66) playPetMode('grin','小雲偷偷露牙');
+      else if (r < .78) playPetMode('flip','小雲突然後空翻');
+    }, 11000);
+    requestAnimationFrame(petTick);
   }
 
   function hideGameEvent() {
@@ -1187,8 +1367,10 @@
       if (currentGameEventId === ev.id) hideGameEvent();
       return;
     }
+    var newEvent = currentGameEventId !== ev.id;
     currentGameEventId = ev.id;
     gameMascot.textContent = eventEmoji(ev.type);
+    if (newEvent && ev.type === 'cat') playPetMode('rub', '小雲跑來蹭你一下');
     gameEyebrow.textContent = eventLabel(ev.type);
     gameTitle.textContent = ev.title || '玩一個小遊戲';
     gamePrompt.textContent = ev.prompt || '';
