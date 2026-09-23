@@ -1109,7 +1109,7 @@
     fetch(API + '/api/visit', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({event:'盲盒網站登入成功｜使用者：' + (userId === 'A' ? 'A' : userId === 'B' ? 'B' : userId)}),
+      body:JSON.stringify({event:'盲盒網站登入成功｜使用者：' + (userId === 'A' ? 'A' : userId === 'B' ? 'Yun' : userId)}),
       keepalive:true
     }).catch(function(){});
   }
