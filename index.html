@@ -558,6 +558,13 @@
   .attachedImage { display:block; max-width:100%; max-height:420px; object-fit:contain; border-radius:12px; margin:10px 0; }
   .replyImageRow { margin-top:8px; }
 </style>
+
+<style>
+  .petBar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:2px 0 22px;padding:12px 14px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(255,255,255,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 10px 30px rgba(0,0,0,.22)}
+  .petIdentity{display:flex;align-items:center;gap:10px;min-width:0}.petFace{font-size:30px;filter:drop-shadow(0 3px 10px rgba(255,255,255,.16))}.petIdentity strong{font-size:14px}.petLevel{margin-left:7px;font-size:11px;color:var(--accent-cyan)}.petMood{font-size:11px;color:var(--text-lo);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}.petProgressWrap{min-width:145px;display:flex;align-items:center;gap:7px}.petProgress{height:7px;flex:1;border-radius:999px;background:rgba(255,255,255,.11);overflow:hidden}.petProgress span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#8b7cff,#4ce0ff);transition:width .3s ease}.petXpText{font-size:10px;color:var(--text-lo);min-width:45px;text-align:right}
+  .gameOverlay{position:fixed;inset:0;z-index:40;background:rgba(2,4,12,.55);display:flex;align-items:flex-end;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}.gameOverlay.hidden{display:none}.gameCard{position:relative;width:min(520px,100%);padding:20px 18px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.26);background:linear-gradient(145deg,rgba(24,27,49,.97),rgba(8,29,34,.97));box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 35px rgba(76,224,255,.12);animation:gameIn .22s ease-out}.gameOverlay.hidden .gameCard{animation:none}@keyframes gameIn{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}.gameClose{position:absolute;top:11px;right:11px;width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text-lo);cursor:pointer}.gameMascot{text-align:center;font-size:34px;margin:2px 0 6px}.gameEyebrow{text-align:center;font-size:11px;color:var(--accent-cyan);font-weight:700;letter-spacing:.04em}.gameTitle{text-align:center;font-size:20px;font-weight:800;margin:6px 32px 8px}.gamePrompt{text-align:center;color:var(--text-lo);line-height:1.7;font-size:14px;margin:0 auto 14px;max-width:34em}.gameChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gameChoice,.gameAction{appearance:none;width:100%;min-height:46px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.07);color:var(--text-hi);font:inherit;font-weight:650;cursor:pointer}.gameChoice:hover,.gameAction:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}.gameActionRow:empty{display:none}.gameActionRow{display:flex;gap:9px;margin-top:9px}.gameActionRow .gameAction{flex:1}.gameReward{min-height:20px;margin-top:10px;text-align:center;font-size:12px;color:#c9f8ff}.gameSkip{display:block;margin:10px auto 0;border:0;background:transparent;color:var(--text-lo);font:inherit;font-size:11px;cursor:pointer}.gameSkip:hover{color:var(--text-hi)}
+  @media (max-width:420px){.petBar{align-items:flex-start;flex-direction:column}.petProgressWrap{width:100%;}.gameChoices{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <div class="mesh"></div>
@@ -574,6 +581,11 @@
   </header>
 
   <section id="boxGrid" class="grid"></section>
+
+  <section id="petBar" class="petBar" style="display:none;">
+    <div class="petIdentity"><span class="petFace" id="petFace">🐱</span><div><strong id="petName">小雲</strong><span class="petLevel">Lv.<span id="petLevel">1</span></span><div id="petMood" class="petMood">今天心情不錯</div></div></div>
+    <div class="petProgressWrap"><div class="petProgress"><span id="petXpFill"></span></div><div id="petXpText" class="petXpText">0 / 100</div></div>
+  </section>
 
   <form id="addForm">
     <div class="moods">
@@ -599,6 +611,20 @@
     </div>
   </form>
 </main>
+
+<div id="gameOverlay" class="gameOverlay hidden" aria-live="polite">
+  <div class="gameCard">
+    <button id="gameClose" type="button" class="gameClose" aria-label="暫時不玩">✕</button>
+    <div id="gameMascot" class="gameMascot">🐱</div>
+    <div id="gameEyebrow" class="gameEyebrow">小雲剛剛想到一個</div>
+    <div id="gameTitle" class="gameTitle"></div>
+    <div id="gamePrompt" class="gamePrompt"></div>
+    <div id="gameChoices" class="gameChoices"></div>
+    <div id="gameActionRow" class="gameActionRow"></div>
+    <div id="gameReward" class="gameReward"></div>
+    <button id="gameSkip" type="button" class="gameSkip">先不要，繼續聊天</button>
+  </div>
+</div>
 
 <div id="noteOverlay" class="overlay hidden">
   <div class="note">
@@ -699,6 +725,25 @@
   var aiTopicUseBtn = document.getElementById('aiTopicUseBtn');
   var aiTopicValue = '';
   var aiTopicBusy = false;
+  var gameOverlay = document.getElementById('gameOverlay');
+  var gameCloseBtn = document.getElementById('gameClose');
+  var gameSkipBtn = document.getElementById('gameSkip');
+  var gameMascot = document.getElementById('gameMascot');
+  var gameEyebrow = document.getElementById('gameEyebrow');
+  var gameTitle = document.getElementById('gameTitle');
+  var gamePrompt = document.getElementById('gamePrompt');
+  var gameChoices = document.getElementById('gameChoices');
+  var gameActionRow = document.getElementById('gameActionRow');
+  var gameReward = document.getElementById('gameReward');
+  var petBar = document.getElementById('petBar');
+  var petNameEl = document.getElementById('petName');
+  var petLevelEl = document.getElementById('petLevel');
+  var petMoodEl = document.getElementById('petMood');
+  var petXpFill = document.getElementById('petXpFill');
+  var petXpText = document.getElementById('petXpText');
+  var currentGameEventId = '';
+  var seenReplyIds = Object.create(null);
+  var gameBusy = false;
 
   function fmtTime(ts) {
     if (!ts) return '';
@@ -739,14 +784,20 @@
     }
   }
   function renderPingStatus() {
-    if (state.onlinePingAt) {
+    // Yun（使用者 B）不顯示「最近一次點了我在線上，聊聊？」時間；只有 A 可見。
+    if (userId === 'A' && state.onlinePingAt) {
       pingStatusEl.style.display = '';
       pingStatusEl.textContent = '最近一次點了「我在線上，聊聊？」：' + fmtTime(state.onlinePingAt);
-    } else pingStatusEl.style.display = 'none';
+    } else {
+      pingStatusEl.style.display = 'none';
+      pingStatusEl.textContent = '';
+    }
   }
   function render() {
     renderLastOpened();
     renderPingStatus();
+    renderPet();
+    renderGameEvent();
     grid.innerHTML = '';
     sortedBoxes().forEach(function(box){
       var mood = MOODS[box.mood] || MOODS.random;
@@ -968,6 +1019,156 @@
     return result.file_id;
   }
 
+  function renderPet() {
+    var game = state.game || {};
+    var pet = game.pet || {};
+    var xp = Math.max(0, Number(pet.xp || game.xp || 0));
+    var level = Math.max(1, Number(pet.level || game.level || (Math.floor(xp / 100) + 1)));
+    var intoLevel = xp % 100;
+    petNameEl.textContent = pet.name || '小雲';
+    petLevelEl.textContent = String(level);
+    petMoodEl.textContent = pet.mood || '今天心情不錯';
+    petXpFill.style.width = Math.min(100, intoLevel) + '%';
+    petXpText.textContent = intoLevel + ' / 100';
+    petBar.style.display = 'flex';
+  }
+
+  function hideGameEvent() {
+    gameOverlay.classList.add('hidden');
+    currentGameEventId = '';
+  }
+
+  function eventEmoji(type) {
+    return ({guess:'🔎', truth:'💬', dare:'🎲', topic:'💡', memory:'🌙', cat:'🐱'})[type] || '🐱';
+  }
+  function eventLabel(type) {
+    return ({guess:'小雲發現一個線索', truth:'小雲想問你一件事', dare:'小雲說：來玩一個小挑戰', topic:'小雲想到一個可以聊的', memory:'小雲記得一件事', cat:'小雲突然來撒嬌'})[type] || '小雲有個小遊戲';
+  }
+  function renderGameEvent() {
+    var ev = state.game && state.game.activeEvent;
+    if (!ev || !ev.id) {
+      hideGameEvent();
+      return;
+    }
+    var dismissed = Array.isArray(ev.dismissedBy) && ev.dismissedBy.indexOf(userId) >= 0;
+    if (ev.completedAt || dismissed) {
+      if (currentGameEventId === ev.id) hideGameEvent();
+      return;
+    }
+    currentGameEventId = ev.id;
+    gameMascot.textContent = eventEmoji(ev.type);
+    gameEyebrow.textContent = eventLabel(ev.type);
+    gameTitle.textContent = ev.title || '玩一個小遊戲';
+    gamePrompt.textContent = ev.prompt || '';
+    gameChoices.innerHTML = '';
+    gameActionRow.innerHTML = '';
+    gameReward.textContent = '';
+    var choices = Array.isArray(ev.choices) ? ev.choices : [];
+    if ((ev.type === 'guess' || ev.type === 'memory') && choices.length) {
+      choices.slice(0,2).forEach(function(choice, idx){
+        var b = document.createElement('button');
+        b.type = 'button'; b.className = 'gameChoice'; b.textContent = choice;
+        b.addEventListener('click', function(){ submitGameAction('choice', idx); });
+        gameChoices.appendChild(b);
+      });
+    } else {
+      var b = document.createElement('button');
+      b.type='button'; b.className='gameAction';
+      if (ev.type === 'topic') b.textContent = '帶入這個話題';
+      else if (ev.type === 'dare') b.textContent = '完成挑戰';
+      else if (ev.type === 'truth') b.textContent = '我來回答';
+      else b.textContent = '摸摸小雲';
+      b.addEventListener('click', function(){ submitGameAction('complete', null); });
+      gameActionRow.appendChild(b);
+    }
+    if (gameOverlay.classList.contains('hidden')) gameOverlay.classList.remove('hidden');
+  }
+
+  async function checkAIEvent(boxId, replyId) {
+    if (gameBusy) return;
+    if (!accessCode || !boxId) return;
+    var box = state.boxes.find(function(b){ return b.id === boxId; });
+    if (!box || !Array.isArray(box.replies) || !box.replies.length) return;
+    var latest = box.replies[box.replies.length - 1];
+    if (replyId && latest.id !== replyId) return;
+    if (!latest.id || seenReplyIds[latest.id]) return;
+    var latestText = String(latest.text || '').trim();
+    if (latestText.length < 10 && !/[?？!！。]/.test(latestText)) return;
+    seenReplyIds[latest.id] = true;
+    try {
+      var res = await fetch(API + '/api/ai-event', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Access-Code':accessCode},
+        body:JSON.stringify({boxId:boxId, replyId:latest.id})
+      });
+      var result = await res.json().catch(function(){ return {}; });
+      if (result && result.game) {
+        state.game = result.game;
+        renderPet();
+      }
+      if (result && result.event) {
+        state.game = state.game || {};
+        state.game.activeEvent = result.event;
+        renderGameEvent();
+      }
+    } catch (_) {}
+  }
+
+  async function submitGameAction(action, value) {
+    if (gameBusy) return;
+    var ev = state.game && state.game.activeEvent;
+    if (!ev || !ev.id) return;
+    gameBusy = true;
+    gameChoices.querySelectorAll('button').forEach(function(b){b.disabled=true;});
+    gameActionRow.querySelectorAll('button').forEach(function(b){b.disabled=true;});
+    try {
+      var res = await fetch(API + '/api/game-action', {
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Access-Code':accessCode},
+        body:JSON.stringify({eventId:ev.id, action:action, value:value})
+      });
+      var result = await res.json().catch(function(){ return {}; });
+      if (!res.ok || !result.ok) throw new Error(result.error || '遊戲處理失敗');
+      if (ev.type === 'topic' && action === 'complete' && ev.prompt) {
+        textInput.value = ev.prompt;
+        textInput.focus();
+      }
+      state.game = result.game || state.game;
+      renderPet();
+      gameReward.textContent = result.message || '';
+      setStatus(result.message || '遊戲完成');
+      setTimeout(function(){
+        if (result.game) renderGameEvent(); else hideGameEvent();
+      }, 500);
+      render();
+    } catch (err) {
+      gameReward.textContent = err.message || '遊戲暫時無法更新';
+      gameChoices.querySelectorAll('button').forEach(function(b){b.disabled=false;});
+      gameActionRow.querySelectorAll('button').forEach(function(b){b.disabled=false;});
+    } finally {
+      gameBusy = false;
+    }
+  }
+
+  async function skipGameEvent() {
+    var ev = state.game && state.game.activeEvent;
+    if (!ev || !ev.id || gameBusy) return;
+    gameBusy = true;
+    try {
+      var res = await fetch(API + '/api/game-action', {
+        method:'POST', headers:{'Content-Type':'application/json','X-Access-Code':accessCode},
+        body:JSON.stringify({eventId:ev.id, action:'dismiss'})
+      });
+      var result = await res.json().catch(function(){ return {}; });
+      if (result && result.game) state.game = result.game;
+      hideGameEvent();
+      renderPet();
+    } catch (_) { hideGameEvent(); }
+    finally { gameBusy = false; }
+  }
+  gameCloseBtn.addEventListener('click', skipGameEvent);
+  gameSkipBtn.addEventListener('click', skipGameEvent);
+
   async function generateAITopic() {
     if (aiTopicBusy) return;
     aiTopicBusy = true;
@@ -1065,6 +1266,9 @@
       state.readBy[userId][box.id] = Date.now();
       var replySavePromise = mutate();
       setStatus('回覆已送出');
+      replySavePromise.then(function(saved){
+        if (saved) setTimeout(function(){ checkAIEvent(box.id, box.replies[box.replies.length - 1].id); }, 80);
+      });
       if ((box.replies || []).length - (box.aiReplyCount || 0) >= 5) {
         replySavePromise.then(function(saved){
           if (saved) setTimeout(function(){ refreshAICover(box, false); }, 50);
@@ -1159,6 +1363,12 @@
     s.readBy = s.readBy && typeof s.readBy === 'object' ? s.readBy : {};
     s.lastOpenedAt = s.lastOpenedAt || null;
     s.onlinePingAt = s.onlinePingAt || null;
+    s.game = s.game && typeof s.game === 'object' ? s.game : {
+      xp: 0, level: 1, achievements: [], pet: { name: '小雲', xp: 0, level: 1, mood: '今天心情不錯' }, activeEvent: null, history: []
+    };
+    s.game.achievements = Array.isArray(s.game.achievements) ? s.game.achievements : [];
+    s.game.history = Array.isArray(s.game.history) ? s.game.history : [];
+    s.game.pet = s.game.pet && typeof s.game.pet === 'object' ? s.game.pet : { name: '小雲', xp: 0, level: 1, mood: '今天心情不錯' };
     return s;
   }
   function loadState() {
@@ -1198,7 +1408,12 @@
 
   loadState().then(function(){
     // 先顯示盒子，再補齊舊盒子的 AI 對話摘要封面。
-    window.setTimeout(function(){ ensureMissingAICovers().catch(function(){}); }, 150);
+    window.setTimeout(function(){
+      ensureMissingAICovers().catch(function(){});
+      state.boxes.forEach(function(b){
+        if (b.replies && b.replies.length) checkAIEvent(b.id, b.replies[b.replies.length - 1].id);
+      });
+    }, 150);
     window.setInterval(function(){
       if (dirty || Date.now() - lastLocalMutation < 2500) return;
       fetch(API + '/api/state', {
@@ -1210,6 +1425,9 @@
         if(!payload || dirty) return;
         state = normalizeState(payload.state);
         render();
+        state.boxes.forEach(function(b){
+          if (b.replies && b.replies.length) checkAIEvent(b.id, b.replies[b.replies.length - 1].id);
+        });
         if(openBoxId) {
           var current = state.boxes.find(function(b){return b.id === openBoxId;});
           if(current) {
