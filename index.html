@@ -233,26 +233,10 @@
     top: 62px;
     color: #fff;
     font-size: 15px;
-    line-height: 1.45;
+    line-height: 1.5;
     font-weight: 800;
     text-align: center;
     text-shadow: 0 1px 8px rgba(0,0,0,.6);
-    z-index: 2;
-    display: -webkit-box;
-    -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-  }
-  .boxCoverTheme {
-    position: absolute;
-    left: 11px;
-    right: 11px;
-    bottom: 12px;
-    color: rgba(255,255,255,.78);
-    font-size: 10px;
-    line-height: 1.35;
-    text-align: center;
     z-index: 2;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -260,7 +244,10 @@
     overflow: hidden;
     overflow-wrap: anywhere;
   }
+  .boxCoverTheme { display: none; }
   .boxCoverSummary { display: none; }
+  #aiCoverTheme { display: none; }
+  #aiCoverSummary { display: none; }
   .box.opened { opacity: .85; }
   .box.bounce { animation: bounce .38s ease; }
   @keyframes bounce {
@@ -310,15 +297,22 @@
   }
   .moods {
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    flex-wrap: nowrap;
+    gap: 6px;
     margin-bottom: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    padding-bottom: 2px;
   }
+  .moods::-webkit-scrollbar { display: none; }
   .moods label {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 13px;
+    gap: 5px;
+    padding: 7px 10px;
+    flex: 0 0 auto;
+    white-space: nowrap;
     border-radius: 999px;
     border: 1px solid var(--glass-border);
     background: rgba(255,255,255,.04);
@@ -339,6 +333,37 @@
     font-size: 15px;
     padding: 12px 14px;
     line-height: 1.6;
+  }
+  .topicRow {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin: 0 0 8px;
+    min-width:0;
+  }
+  .aiTopicBtn, .aiTopicUseBtn {
+    appearance:none;
+    border:1px solid rgba(76,224,255,.35);
+    background:rgba(76,224,255,.07);
+    color:var(--text-hi);
+    border-radius:10px;
+    font-family:inherit;
+    font-size:12px;
+    padding:7px 10px;
+    cursor:pointer;
+    flex:none;
+  }
+  .aiTopicBtn:hover, .aiTopicUseBtn:hover { background:rgba(76,224,255,.13); }
+  .aiTopicBtn:disabled { opacity:.55; cursor:wait; }
+  .aiTopicHint {
+    color:var(--text-lo);
+    font-size:11.5px;
+    line-height:1.45;
+    min-width:0;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+    flex:1;
   }
   textarea { min-height: 84px; resize: vertical; }
   textarea:focus-visible, .replyInput:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -558,6 +583,11 @@
       <label><input type="radio" name="mood" value="share"><span>🌤️ 開心分享</span></label>
       <label><input type="radio" name="mood" value="random"><span>🎲 隨便說說</span></label>
     </div>
+    <div class="topicRow">
+      <button id="aiTopicBtn" type="button" class="aiTopicBtn">✦ AI 想話題</button>
+      <span id="aiTopicHint" class="aiTopicHint">讓 AI 根據最近的聊天內容想一個自然的開場</span>
+      <button id="aiTopicUseBtn" type="button" class="aiTopicUseBtn" style="display:none;">帶入</button>
+    </div>
     <textarea id="boxText" placeholder="寫下你想說的話,或問問她今天有什麼開心事、想不想傳張照片……"></textarea>
     <div class="imagePickRow">
       <label class="imagePick">📷 附上一張圖片<input id="boxImageInput" type="file" accept="image/*" hidden></label>
@@ -580,7 +610,7 @@
     <p id="noteText"></p>
     <div class="noteActionRow">
       <button id="quoteBoxBtn" type="button" class="quoteBtn">↩ 引用這句</button>
-      <button id="aiRefreshBtn" type="button" class="aiBtn">✦ AI 更新主題</button>
+      <button id="aiRefreshBtn" type="button" class="aiBtn">✦ AI 更新摘要</button>
     </div>
     <div id="aiCoverPanel" class="aiCoverPanel">
       <div class="aiCoverInfo">
@@ -664,6 +694,11 @@
   var lastOpenedEl = document.getElementById('lastOpened');
   var pingBtn = document.getElementById('pingBtn');
   var pingStatusEl = document.getElementById('pingStatus');
+  var aiTopicBtn = document.getElementById('aiTopicBtn');
+  var aiTopicHint = document.getElementById('aiTopicHint');
+  var aiTopicUseBtn = document.getElementById('aiTopicUseBtn');
+  var aiTopicValue = '';
+  var aiTopicBusy = false;
 
   function fmtTime(ts) {
     if (!ts) return '';
@@ -727,10 +762,8 @@
       if (coverTitle || coverTheme || coverSummary) el.classList.add('aiCover');
       el.innerHTML =
         (count ? '<span class="badge">' + count + '</span>' : '') +
-        ((coverTitle || coverTheme || coverSummary) ? '' : '<span class="peek">' + escapeHtml(mood.emoji) + '</span>') +
+        (coverTitle ? '' : '<span class="peek">' + escapeHtml(mood.emoji) + '</span>') +
         (coverTitle ? '<span class="boxCoverTitle">' + escapeHtml(coverTitle) + '</span>' : '') +
-        (coverTheme ? '<span class="boxCoverTheme">' + escapeHtml(coverTheme) + '</span>' : '') +
-        (coverSummary ? '<span class="boxCoverSummary">' + escapeHtml(coverSummary) + '</span>' : '') +
         (isUnread(box) ? '<span class="unreadDot" title="未讀"></span>' : '');
       el.addEventListener('click', function(){
         el.classList.add('bounce');
@@ -935,6 +968,33 @@
     return result.file_id;
   }
 
+  async function generateAITopic() {
+    if (aiTopicBusy) return;
+    aiTopicBusy = true;
+    aiTopicBtn.disabled = true;
+    aiTopicHint.textContent = 'AI 正在根據最近的聊天內容想話題…';
+    try {
+      var res = await fetch(API + '/api/ai-topic', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','X-Access-Code':accessCode},
+        body: JSON.stringify({})
+      });
+      var result = await res.json().catch(function(){ return {}; });
+      if (!res.ok || !result.ok || !result.topic) {
+        throw new Error(result.error || 'AI 話題生成失敗（HTTP ' + res.status + '）');
+      }
+      aiTopicValue = String(result.topic).trim();
+      aiTopicHint.textContent = aiTopicValue;
+      aiTopicUseBtn.style.display = '';
+    } catch (err) {
+      aiTopicHint.textContent = err.message || 'AI 話題生成失敗';
+      aiTopicUseBtn.style.display = 'none';
+    } finally {
+      aiTopicBtn.disabled = false;
+      aiTopicBusy = false;
+    }
+  }
+
   async function generateAICover(box) {
     if (!box) return null;
     var res = await fetch(API + '/api/ai-cover', {
@@ -1027,6 +1087,18 @@
     boxImageName.textContent = boxImageInput.files[0] ? boxImageInput.files[0].name : '';
   });
 
+  aiTopicBtn.addEventListener('click', generateAITopic);
+  aiTopicUseBtn.addEventListener('click', function(){
+    if (!aiTopicValue) return;
+    if (!textInput.value.trim()) {
+      textInput.value = aiTopicValue;
+    } else {
+      textInput.value += (textInput.value.endsWith(' ') ? '' : ' ') + aiTopicValue;
+    }
+    textInput.focus();
+    aiTopicUseBtn.style.display = 'none';
+  });
+
   pingBtn.addEventListener('click', function(){
     state.onlinePingAt = Date.now();
     pingBtn.classList.add('sent');
@@ -1109,7 +1181,7 @@
     fetch(API + '/api/visit', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({event:'盲盒網站登入成功｜使用者：' + (userId === 'A' ? 'A' : userId === 'B' ? 'Yun' : userId)}),
+      body:JSON.stringify({event:'盲盒網站登入成功｜使用者：' + (userId === 'A' ? 'A' : userId === 'B' ? 'B' : userId)}),
       keepalive:true
     }).catch(function(){});
   }
