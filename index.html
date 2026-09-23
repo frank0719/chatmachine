@@ -146,7 +146,7 @@
   }
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
     gap: 14px;
     margin-bottom: 28px;
   }
@@ -160,7 +160,8 @@
   .box {
     appearance: none;
     border: 1px solid var(--glass-border);
-    aspect-ratio: 1;
+    aspect-ratio: 0.86;
+    min-height: 150px;
     border-radius: 22px;
     background: var(--glass);
     -webkit-backdrop-filter: blur(18px) saturate(160%);
@@ -227,30 +228,53 @@
   }
   .boxCoverTitle {
     position: absolute;
-    left: 9px;
-    right: 9px;
-    bottom: 22px;
+    left: 11px;
+    right: 11px;
+    top: 31px;
     color: #fff;
-    font-size: 12px;
+    font-size: 15px;
     line-height: 1.25;
     font-weight: 800;
+    text-align: left;
     text-shadow: 0 1px 6px rgba(0,0,0,.55);
     z-index: 2;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
   }
   .boxCoverTheme {
     position: absolute;
-    left: 8px;
-    right: 8px;
-    bottom: 7px;
-    color: rgba(255,255,255,.8);
-    font-size: 9px;
+    left: 11px;
+    right: 11px;
+    top: 76px;
+    color: rgba(255,255,255,.9);
+    font-size: 10px;
+    line-height: 1.35;
+    text-align: left;
     z-index: 2;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-wrap: anywhere;
+  }
+  .boxCoverSummary {
+    position: absolute;
+    left: 11px;
+    right: 11px;
+    top: 112px;
+    color: rgba(255,255,255,.78);
+    font-size: 10px;
+    line-height: 1.4;
+    text-align: left;
+    z-index: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    overflow-wrap: anywhere;
   }
   .box.opened { opacity: .85; }
   .box.bounce { animation: bounce .38s ease; }
@@ -711,12 +735,14 @@
       var count = (box.replies || []).length;
       var coverTitle = String(box.aiTitle || '').trim();
       var coverTheme = String(box.aiTheme || '').trim();
-      if (coverTitle || coverTheme) el.classList.add('aiCover');
+      var coverSummary = String(box.aiSummary || '').trim();
+      if (coverTitle || coverTheme || coverSummary) el.classList.add('aiCover');
       el.innerHTML =
         (count ? '<span class="badge">' + count + '</span>' : '') +
-        ((coverTitle || coverTheme) ? '<span class="boxCoverIcon">' + escapeHtml(mood.emoji) + '</span>' : '<span class="peek">' + escapeHtml(mood.emoji) + '</span>') +
+        ((coverTitle || coverTheme || coverSummary) ? '' : '<span class="peek">' + escapeHtml(mood.emoji) + '</span>') +
         (coverTitle ? '<span class="boxCoverTitle">' + escapeHtml(coverTitle) + '</span>' : '') +
-        (coverTheme ? '<span class="boxCoverTheme">主題 · ' + escapeHtml(coverTheme) + '</span>' : '') +
+        (coverTheme ? '<span class="boxCoverTheme">' + escapeHtml(coverTheme) + '</span>' : '') +
+        (coverSummary ? '<span class="boxCoverSummary">' + escapeHtml(coverSummary) + '</span>' : '') +
         (isUnread(box) ? '<span class="unreadDot" title="未讀"></span>' : '');
       el.addEventListener('click', function(){
         el.classList.add('bounce');
@@ -830,11 +856,11 @@
     dirty = true;
     lastLocalMutation = Date.now();
     render();
-    queueSave();
+    return queueSave();
   }
   function queueSave() {
     saveQueue = saveQueue.then(function(){
-      if (!dirty) return;
+      if (!dirty) return true;
       var snapshot = JSON.stringify(state);
       dirty = false;
       return fetch(API + '/api/state', {
@@ -844,11 +870,14 @@
       }).then(function(res){
         if (!res.ok) throw new Error('儲存失敗（HTTP ' + res.status + '）');
         setStatus('已同步');
+        return true;
       }).catch(function(err){
         dirty = true;
         setStatus(err.message || '同步失敗，請檢查網路後重試。', true);
+        return false;
       });
     });
+    return saveQueue;
   }
   function openBox(id) {
     openBoxId = id;
@@ -920,18 +949,10 @@
 
   async function generateAICover(box) {
     if (!box) return null;
-    var replies = (box.replies || []).map(function(r){
-      return { by: r.by, text: (r.text || '').slice(0, 500) };
-    }).slice(-20);
     var res = await fetch(API + '/api/ai-cover', {
       method: 'POST',
       headers: {'Content-Type':'application/json','X-Access-Code':accessCode},
-      body: JSON.stringify({
-        boxId: box.id,
-        text: (box.text || '').slice(0, 1200),
-        mood: box.mood || 'life',
-        replies: replies
-      })
+      body: JSON.stringify({ boxId: box.id })
     });
     var result = await res.json().catch(function(){ return {}; });
     if (!res.ok || !result.ok) throw new Error(result.error || 'AI 封面生成失敗（HTTP ' + res.status + '）');
@@ -984,10 +1005,12 @@
       renderReplies(box);
       setReplyQuote(null);
       state.readBy[userId][box.id] = Date.now();
-      mutate();
+      var replySavePromise = mutate();
       setStatus('回覆已送出');
-      if ((box.replies || []).length - (box.aiReplyCount || 0) >= 3) {
-        setTimeout(function(){ refreshAICover(box, false); }, 50);
+      if ((box.replies || []).length - (box.aiReplyCount || 0) >= 5) {
+        replySavePromise.then(function(saved){
+          if (saved) setTimeout(function(){ refreshAICover(box, false); }, 50);
+        });
       }
     } catch (err) {
       setStatus(err.message || '圖片上傳失敗', true);
@@ -1037,11 +1060,13 @@
       textInput.value = '';
       boxImageInput.value = '';
       boxImageName.textContent = '';
-      mutate();
-      setStatus('盲盒已建立，AI 正在分析主題…');
-      try {
-        await refreshAICover(newBox, false);
-      } catch (_) {}
+      var savedNewBox = await mutate();
+      setStatus(savedNewBox ? '盲盒已建立，AI 正在分析主題…' : '盲盒已建立，正在等待同步…');
+      if (savedNewBox) {
+        try {
+          await refreshAICover(newBox, false);
+        } catch (_) {}
+      }
     } catch (err) {
       setStatus(err.message || '建立盲盒失敗', true);
     } finally {
