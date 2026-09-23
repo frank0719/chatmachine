@@ -539,14 +539,48 @@
     margin-bottom: 12px;
     padding-right: 2px;
   }
-  .reply {
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.14);
-    border-radius: 14px;
-    padding: 9px 12px;
-    font-size: 14px;
-    line-height: 1.55;
+  .replies {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding: 2px 2px 4px;
   }
+  .reply {
+    position: relative;
+    max-width: 84%;
+    padding: 9px 12px 10px;
+    border-radius: 17px;
+    font-size: 14px;
+    line-height: 1.62;
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 8px 22px rgba(0,0,0,.12);
+  }
+  .reply.fromA {
+    align-self: flex-end;
+    background: linear-gradient(135deg, rgba(76,224,255,.19), rgba(76,224,255,.07));
+    border-color: rgba(76,224,255,.28);
+    border-bottom-right-radius: 6px;
+  }
+  .reply.fromB {
+    align-self: flex-start;
+    background: linear-gradient(135deg, rgba(255,166,200,.18), rgba(255,255,255,.055));
+    border-color: rgba(255,166,200,.25);
+    border-bottom-left-radius: 6px;
+  }
+  .replyMeta {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin-bottom:4px;
+    font-size:10.5px;
+    color:rgba(247,247,251,.58);
+  }
+  .replyName { font-weight:800; letter-spacing:.01em; }
+  .reply.fromA .replyName { color:#7feaff; }
+  .reply.fromB .replyName { color:#ffc4dc; }
   .replyRow {
     display: flex;
     gap: 8px;
@@ -560,8 +594,17 @@
 </style>
 
 <style>
-  .petBar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:2px 0 22px;padding:12px 14px;border:1px solid rgba(255,255,255,.18);border-radius:18px;background:rgba(255,255,255,.07);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 10px 30px rgba(0,0,0,.22)}
-  .petIdentity{display:flex;align-items:center;gap:10px;min-width:0}.petFace{font-size:30px;filter:drop-shadow(0 3px 10px rgba(255,255,255,.16))}.petIdentity strong{font-size:14px}.petLevel{margin-left:7px;font-size:11px;color:var(--accent-cyan)}.petMood{font-size:11px;color:var(--text-lo);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:180px}.petProgressWrap{min-width:145px;display:flex;align-items:center;gap:7px}.petProgress{height:7px;flex:1;border-radius:999px;background:rgba(255,255,255,.11);overflow:hidden}.petProgress span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#8b7cff,#4ce0ff);transition:width .3s ease}.petXpText{font-size:10px;color:var(--text-lo);min-width:45px;text-align:right}
+  .petBar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin:2px 0 22px;padding:13px 14px 13px 12px;border:1px solid rgba(255,255,255,.18);border-radius:22px;background:linear-gradient(135deg,rgba(255,255,255,.09),rgba(255,255,255,.035));backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 14px 36px rgba(0,0,0,.24),inset 0 1px 0 rgba(255,255,255,.13);overflow:hidden}
+  .petIdentity{display:flex;align-items:center;gap:12px;min-width:0}.petStage{position:relative;width:82px;height:70px;flex:none;display:flex;align-items:center;justify-content:center;cursor:pointer}.petStage::before{content:'';position:absolute;width:62px;height:18px;bottom:6px;border-radius:50%;background:rgba(76,224,255,.13);filter:blur(10px);animation:petShadow 2.8s ease-in-out infinite}.petSvg{width:76px;height:66px;position:relative;z-index:2;overflow:visible;animation:petBob 2.8s ease-in-out infinite;filter:drop-shadow(0 7px 9px rgba(0,0,0,.22)) drop-shadow(0 0 10px rgba(76,224,255,.10))}.petStage:hover .petSvg{animation:petHello .62s ease-in-out}.petEarInner{fill:#ffc1da;opacity:.8}.petEye{fill:#151827}.petEyeShine{fill:#fff}.petMuzzle{fill:#fff4f8;opacity:.9}.petNose{fill:#ee86b0}.petWhisker{stroke:rgba(255,255,255,.78);stroke-width:1.1;stroke-linecap:round}.petPaw{transform-box:fill-box;transform-origin:center;animation:petPaw 3.2s ease-in-out infinite}.petTail{transform-box:fill-box;transform-origin:8% 82%;animation:petTail 2.4s ease-in-out infinite}.petBlink{animation:petBlink 4.8s infinite}.petSpark{transform-box:fill-box;transform-origin:center;animation:petSpark 2.8s ease-in-out infinite}
+  @keyframes petBob{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-3px) rotate(-1deg)}}
+  @keyframes petShadow{0%,100%{transform:scaleX(1);opacity:.55}50%{transform:scaleX(.86);opacity:.35}}
+  @keyframes petTail{0%,100%{transform:rotate(0deg)}50%{transform:rotate(16deg)}75%{transform:rotate(-8deg)}}
+  @keyframes petPaw{0%,76%,100%{transform:rotate(0)}82%{transform:rotate(-13deg) translateY(-1px)}88%{transform:rotate(8deg) translateY(-2px)}94%{transform:rotate(0)}}
+  @keyframes petBlink{0%,46%,48%,100%{transform:scaleY(1)}47%{transform:scaleY(.12)}}
+  @keyframes petSpark{0%,100%{opacity:.25;transform:scale(.7) rotate(0)}45%{opacity:1;transform:scale(1) rotate(12deg)}65%{opacity:.45;transform:scale(.8) rotate(28deg)}}
+  @keyframes petHello{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-4px) rotate(-4deg)}60%{transform:translateY(-2px) rotate(4deg)}}
+  .petInfo{min-width:0}.petIdentity strong{font-size:15px;font-weight:800}.petLevel{display:inline-flex;margin-left:7px;padding:2px 7px;border-radius:999px;font-size:10px;color:#c9f8ff;background:rgba(76,224,255,.08);border:1px solid rgba(76,224,255,.20)}.petMood{font-size:11.5px;color:var(--text-lo);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:190px}.petHint{font-size:10px;color:rgba(247,247,251,.42);margin-top:5px}.petProgressWrap{min-width:160px;display:flex;align-items:center;gap:8px}.petProgress{height:8px;flex:1;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;border:1px solid rgba(255,255,255,.08)}.petProgress span{display:block;height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,#8b7cff,#4ce0ff,#7fe0cf);background-size:200% 100%;animation:petXpFlow 2.8s linear infinite;transition:width .3s ease}.petXpText{font-size:10px;color:var(--text-lo);min-width:55px;text-align:right}.petSpark{position:absolute;z-index:1;color:#bff9ff;font-size:10px}.petSpark.s1{top:5px;right:6px}.petSpark.s2{top:17px;left:6px;animation-delay:.9s}.petSpark.s3{bottom:10px;right:18px;animation-delay:1.5s}@keyframes petXpFlow{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+  @media (prefers-reduced-motion: reduce){.petSvg,.petStage::before,.petProgress span,.petPaw,.petTail,.petBlink,.petSpark{animation:none!important}}
   .gameOverlay{position:fixed;inset:0;z-index:40;background:rgba(2,4,12,.55);display:flex;align-items:flex-end;justify-content:center;padding:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}.gameOverlay.hidden{display:none}.gameCard{position:relative;width:min(520px,100%);padding:20px 18px 16px;border-radius:24px;border:1px solid rgba(255,255,255,.26);background:linear-gradient(145deg,rgba(24,27,49,.97),rgba(8,29,34,.97));box-shadow:0 25px 80px rgba(0,0,0,.5),0 0 35px rgba(76,224,255,.12);animation:gameIn .22s ease-out}.gameOverlay.hidden .gameCard{animation:none}@keyframes gameIn{from{transform:translateY(22px);opacity:0}to{transform:translateY(0);opacity:1}}.gameClose{position:absolute;top:11px;right:11px;width:30px;height:30px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:var(--text-lo);cursor:pointer}.gameMascot{text-align:center;font-size:34px;margin:2px 0 6px}.gameEyebrow{text-align:center;font-size:11px;color:var(--accent-cyan);font-weight:700;letter-spacing:.04em}.gameTitle{text-align:center;font-size:20px;font-weight:800;margin:6px 32px 8px}.gamePrompt{text-align:center;color:var(--text-lo);line-height:1.7;font-size:14px;margin:0 auto 14px;max-width:34em}.gameChoices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.gameChoice,.gameAction{appearance:none;width:100%;min-height:46px;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.07);color:var(--text-hi);font:inherit;font-weight:650;cursor:pointer}.gameChoice:hover,.gameAction:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.38)}.gameActionRow:empty{display:none}.gameActionRow{display:flex;gap:9px;margin-top:9px}.gameActionRow .gameAction{flex:1}.gameReward{min-height:20px;margin-top:10px;text-align:center;font-size:12px;color:#c9f8ff}.gameSkip{display:block;margin:10px auto 0;border:0;background:transparent;color:var(--text-lo);font:inherit;font-size:11px;cursor:pointer}.gameSkip:hover{color:var(--text-hi)}
   @media (max-width:420px){.petBar{align-items:flex-start;flex-direction:column}.petProgressWrap{width:100%;}.gameChoices{grid-template-columns:1fr}}
 </style>
@@ -583,7 +626,42 @@
   <section id="boxGrid" class="grid"></section>
 
   <section id="petBar" class="petBar" style="display:none;">
-    <div class="petIdentity"><span class="petFace" id="petFace">🐱</span><div><strong id="petName">小雲</strong><span class="petLevel">Lv.<span id="petLevel">1</span></span><div id="petMood" class="petMood">今天心情不錯</div></div></div>
+    <div class="petIdentity">
+      <div class="petStage" id="petStage" title="摸摸小雲">
+        <span class="petSpark s1">✦</span><span class="petSpark s2">·</span><span class="petSpark s3">✦</span>
+        <svg class="petSvg" viewBox="0 0 120 96" role="img" aria-label="小雲電子寵物">
+          <g class="petTail">
+            <path d="M92 66 C112 58, 114 39, 103 33 C96 29, 91 35, 97 40 C102 44, 104 51, 96 55" fill="none" stroke="#dca7f2" stroke-width="12" stroke-linecap="round"/>
+            <path d="M92 66 C112 58, 114 39, 103 33" fill="none" stroke="#efd3ff" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+          </g>
+          <ellipse cx="59" cy="67" rx="34" ry="23" fill="#a9d8ff"/>
+          <ellipse cx="59" cy="72" rx="27" ry="17" fill="#d8eeff" opacity=".65"/>
+          <g class="petPaw">
+            <ellipse cx="42" cy="79" rx="10" ry="6.5" fill="#bfe3ff"/>
+            <circle cx="38" cy="78" r="1.6" fill="#6e77a6"/><circle cx="42" cy="80" r="1.6" fill="#6e77a6"/><circle cx="46" cy="78" r="1.6" fill="#6e77a6"/>
+          </g>
+          <g>
+            <path d="M31 37 L35 10 Q37 3 43 10 L53 24" fill="#a9d8ff"/>
+            <path d="M67 24 L77 10 Q83 3 85 11 L89 37" fill="#a9d8ff"/>
+            <path d="M36 26 L39 15 L47 25" class="petEarInner"/>
+            <path d="M73 25 L81 15 L84 27" class="petEarInner"/>
+            <path d="M30 42 C30 20, 48 13, 60 13 C72 13, 90 20, 90 42 C90 59, 79 71, 60 71 C41 71, 30 59, 30 42 Z" fill="#c5e7ff"/>
+            <ellipse cx="60" cy="44" rx="23" ry="19" fill="#ecf7ff" opacity=".76"/>
+            <g class="petBlink">
+              <ellipse class="petEye" cx="50" cy="43" rx="4.8" ry="6.3"/>
+              <ellipse class="petEye" cx="70" cy="43" rx="4.8" ry="6.3"/>
+              <circle class="petEyeShine" cx="51.5" cy="41" r="1.8"/>
+              <circle class="petEyeShine" cx="71.5" cy="41" r="1.8"/>
+            </g>
+            <ellipse class="petMuzzle" cx="60" cy="53" rx="11" ry="7.5"/>
+            <path class="petNose" d="M56.2 51 Q60 48 63.8 51 Q62.2 55 60 56 Q57.8 55 56.2 51Z"/>
+            <path d="M60 55 Q56 59 52 57 M60 55 Q64 59 68 57" fill="none" stroke="#7f5c82" stroke-width="1.4" stroke-linecap="round"/>
+            <path class="petWhisker" d="M48 53 L31 49 M48 57 L31 58 M72 53 L89 49 M72 57 L89 58"/>
+          </g>
+        </svg>
+      </div>
+      <div class="petInfo"><strong id="petName">小雲</strong><span class="petLevel">Lv.<span id="petLevel">1</span></span><div id="petMood" class="petMood">今天心情不錯</div><div class="petHint">點一下，小雲會跟你打招呼</div></div>
+    </div>
     <div class="petProgressWrap"><div class="petProgress"><span id="petXpFill"></span></div><div id="petXpText" class="petXpText">0 / 100</div></div>
   </section>
 
@@ -873,12 +951,18 @@
     repliesList.innerHTML = '';
     (box.replies || []).forEach(function(r){
       var row = document.createElement('div');
-      row.className = 'reply';
+      row.className = 'reply ' + (r.by === 'A' ? 'fromA' : 'fromB');
       var header = document.createElement('div');
       header.className = 'replyHeader';
       var who = document.createElement('div');
-      who.style.cssText = 'font-size:11px;opacity:.65;';
-      who.textContent = (r.by === 'A' ? 'A' : r.by === 'B' ? 'B' : '成員') + ' · ' + fmtTime(r.ts);
+      who.className = 'replyMeta';
+      var name = document.createElement('span');
+      name.className = 'replyName';
+      name.textContent = r.by === 'A' ? 'Frank' : r.by === 'B' ? 'Yun' : '成員';
+      var time = document.createElement('span');
+      time.textContent = fmtTime(r.ts);
+      who.appendChild(name);
+      who.appendChild(time);
       var quoteBtn = document.createElement('button');
       quoteBtn.type = 'button';
       quoteBtn.className = 'quoteBtn';
@@ -894,7 +978,7 @@
         quote.className = 'replyQuote';
         var qlabel = document.createElement('div');
         qlabel.className = 'replyQuoteLabel';
-        qlabel.textContent = '引用 ' + (r.replyTo.by === 'A' ? 'A' : r.replyTo.by === 'B' ? 'B' : '訊息');
+        qlabel.textContent = '引用 ' + (r.replyTo.by === 'A' ? 'Frank' : r.replyTo.by === 'B' ? 'Yun' : '訊息');
         var qtext = document.createElement('div');
         qtext.textContent = quoteSourceText(r.replyTo);
         quote.appendChild(qlabel);
@@ -1033,6 +1117,22 @@
     petBar.style.display = 'flex';
   }
 
+  var petStage = document.getElementById('petStage');
+  if (petStage) {
+    petStage.addEventListener('click', function(){
+      var svg = petStage.querySelector('.petSvg');
+      if (svg) {
+        svg.style.animation = 'petHello .62s ease-in-out';
+        setTimeout(function(){ svg.style.animation = ''; }, 700);
+      }
+      petMoodEl.textContent = '被你摸了一下，正在蹭你';
+      setTimeout(function(){
+        var pet = (state.game && state.game.pet) || {};
+        petMoodEl.textContent = pet.mood || '今天心情不錯';
+      }, 1800);
+    });
+  }
+
   function hideGameEvent() {
     gameOverlay.classList.add('hidden');
     currentGameEventId = '';
@@ -1093,7 +1193,7 @@
     if (replyId && latest.id !== replyId) return;
     if (!latest.id || seenReplyIds[latest.id]) return;
     var latestText = String(latest.text || '').trim();
-    if (latestText.length < 10 && !/[?？!！。]/.test(latestText)) return;
+    if (latestText.length < 4 && !/[?？!！。~～😂🤣😆]/u.test(latestText)) return;
     seenReplyIds[latest.id] = true;
     try {
       var res = await fetch(API + '/api/ai-event', {
