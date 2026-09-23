@@ -228,18 +228,18 @@
   }
   .boxCoverTitle {
     position: absolute;
-    left: 11px;
-    right: 11px;
-    top: 31px;
+    left: 12px;
+    right: 12px;
+    top: 62px;
     color: #fff;
     font-size: 15px;
-    line-height: 1.25;
+    line-height: 1.45;
     font-weight: 800;
-    text-align: left;
-    text-shadow: 0 1px 6px rgba(0,0,0,.55);
+    text-align: center;
+    text-shadow: 0 1px 8px rgba(0,0,0,.6);
     z-index: 2;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
     overflow-wrap: anywhere;
@@ -248,11 +248,11 @@
     position: absolute;
     left: 11px;
     right: 11px;
-    top: 76px;
-    color: rgba(255,255,255,.9);
+    bottom: 12px;
+    color: rgba(255,255,255,.78);
     font-size: 10px;
     line-height: 1.35;
-    text-align: left;
+    text-align: center;
     z-index: 2;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -260,22 +260,7 @@
     overflow: hidden;
     overflow-wrap: anywhere;
   }
-  .boxCoverSummary {
-    position: absolute;
-    left: 11px;
-    right: 11px;
-    top: 112px;
-    color: rgba(255,255,255,.78);
-    font-size: 10px;
-    line-height: 1.4;
-    text-align: left;
-    z-index: 2;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    overflow-wrap: anywhere;
-  }
+  .boxCoverSummary { display: none; }
   .box.opened { opacity: .85; }
   .box.bounce { animation: bounce .38s ease; }
   @keyframes bounce {
@@ -710,10 +695,13 @@
     });
   }
   function renderLastOpened() {
-    if (state.lastOpenedAt) {
+    if (userId === 'A' && state.lastOpenedAt) {
       lastOpenedEl.style.display = '';
       lastOpenedEl.textContent = '最近一次有盒子被拆開：' + fmtTime(state.lastOpenedAt);
-    } else lastOpenedEl.style.display = 'none';
+    } else {
+      lastOpenedEl.style.display = 'none';
+      lastOpenedEl.textContent = '';
+    }
   }
   function renderPingStatus() {
     if (state.onlinePingAt) {
@@ -733,9 +721,9 @@
       el.style.setProperty('--tint', mood.tint);
       el.setAttribute('aria-label', mood.label + (isUnread(box) ? '，有未讀內容' : ''));
       var count = (box.replies || []).length;
-      var coverTitle = String(box.aiTitle || '').trim();
+      var coverTitle = String(box.aiSummary || box.aiTitle || '').trim();
       var coverTheme = String(box.aiTheme || '').trim();
-      var coverSummary = String(box.aiSummary || '').trim();
+      var coverSummary = '';
       if (coverTitle || coverTheme || coverSummary) el.classList.add('aiCover');
       el.innerHTML =
         (count ? '<span class="badge">' + count + '</span>' : '') +
@@ -956,9 +944,9 @@
     });
     var result = await res.json().catch(function(){ return {}; });
     if (!res.ok || !result.ok) throw new Error(result.error || 'AI 封面生成失敗（HTTP ' + res.status + '）');
-    box.aiTitle = result.title || '';
+    box.aiTitle = result.title || result.summary || '';
     box.aiTheme = result.theme || '';
-    box.aiSummary = result.summary || '';
+    box.aiSummary = result.summary || result.title || '';
     box.aiCoverFileId = null;
     box.aiReplyCount = (box.replies || []).length;
     return result;
@@ -979,6 +967,16 @@
     } finally {
       aiRefreshBtn.disabled = false;
       aiBusy = false;
+    }
+  }
+
+  async function ensureMissingAICovers() {
+    // 只補尚未有「對話摘要」的盒子，避免每次重新整理都消耗 Gemini 配額。
+    var missing = state.boxes.filter(function(box){
+      return !(String(box.aiSummary || '').trim() || String(box.aiTitle || '').trim());
+    });
+    for (var i = 0; i < missing.length && i < MAX_BOXES; i++) {
+      await refreshAICover(missing[i], false);
     }
   }
 
@@ -1102,7 +1100,7 @@
       userId = payload.user;
       state = normalizeState(payload.state);
       render();
-      setStatus('雲端已連線 · 使用者 ' + userId);
+      setStatus('');
       // 僅在通行碼驗證成功、雲端資料載入成功後發送 Telegram 通知
       notifyVisit();
     });
@@ -1127,6 +1125,8 @@
   sessionStorage.setItem('blindbox_access_code', accessCode);
 
   loadState().then(function(){
+    // 先顯示盒子，再補齊舊盒子的 AI 對話摘要封面。
+    window.setTimeout(function(){ ensureMissingAICovers().catch(function(){}); }, 150);
     window.setInterval(function(){
       if (dirty || Date.now() - lastLocalMutation < 2500) return;
       fetch(API + '/api/state', {
